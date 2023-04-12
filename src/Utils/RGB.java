@@ -4,7 +4,9 @@ import java.awt.Color;
 
 public class RGB {
 
-    private final int r, g, b;
+    public final int r;
+    public final int g;
+    public final int b;
 
     public RGB (int r, int g, int b) {
         this.r = r;
