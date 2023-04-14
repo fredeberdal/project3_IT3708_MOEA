@@ -1,6 +1,7 @@
 package Utils;
 
 import java.awt.Color;
+import java.util.Objects;
 
 public class RGB {
 
@@ -21,9 +22,6 @@ public class RGB {
 
     public int findRGBInt () { return new Color(r, g, b).getRGB(); }
 
-    /*
-    Ikke blitt brukt av OWREN
-
         @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -37,7 +35,6 @@ public class RGB {
 
     @Override
     public int hashCode() { return Objects.hash(r, g, b); }
-     */
 
 
 }
