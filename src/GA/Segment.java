@@ -14,12 +14,28 @@ public class Segment {
     public Segment(Set <Pixel> pixels){
         this.pixels = pixels;
         this.dev = Fitness.deviation(this);
+        this.connectivity = Fitness.segConnectivity(this);
+        this.edgeValue = Fitness.calculateEdgeValue(this);
+    }
 
-
+    public boolean hasPixel(Pixel p){
+        if(p != null){
+            if (pixels.contains(pixels)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public RGB getCentroid() {
         return centroid;
+    }
+    public RGB locateCentroid(){
+        int size = this.pixels.size();
+        int r, g, b = 0;
+        for(Pixel p: this.pixels){
+
+        }
     }
 
     public void setCentroid(RGB centroid) {
