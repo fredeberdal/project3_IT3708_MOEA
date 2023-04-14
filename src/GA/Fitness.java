@@ -47,6 +47,9 @@ public class Fitness {
     public static double allEdgeValue(Individual ind){
         return ind.getSegments().stream().map(segment -> segment.edgeValue).reduce(0.0, (sum, el) -> sum+el);
     }
+    public static double allDeviation(Individual ind){
+        return ind.getSegments().stream().map(segment -> segment.dev).reduce(0.0, (sum, el) -> sum+el);
+    }
 
     public static double deviation(Segment seg){
         return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, (sum, el) -> sum+el);

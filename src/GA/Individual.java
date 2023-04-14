@@ -1,13 +1,12 @@
 package GA;
 
-import Utils.Pixel;
-import Utils.Tuple;
-import Utils.Utils;
+import Utils.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Individual {
     private final List<Gene> genotype;
@@ -56,19 +55,100 @@ public class Individual {
                     seg.add(currentPixel);
                     currentPixel = currentPixel.directionalNeighbour(genotype.get(index));
                     nodesVisited[index] = true;
-                    index = Utils.toPixelCoordinates(currentPixel.width, currentPixel.height, xLength);
+                    index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
                 }
                 if(this.pixels[indexPixel.r][indexPixel.l] != currentPixel){
-
+                    boolean notCurrent = false;
+                    for(Segment s : temporarySegments){
+                        if(s.hasPixel(currentPixel)){
+                            s.addAllPixels(seg);
+                            notCurrent = true;
+                            break;
+                        }
+                    }
+                    if(notCurrent == true){
+                        temporarySegments.add(new Segment(seg));
+                    }
+                }else{
+                    temporarySegments.add(new Segment(seg));
                 }
-
-            }else{
-
             }
+            this.segments = temporarySegments;
+            this.numberOfSeg = temporarySegments.size();
+            this.edgeValue = Fitness.allEdgeValue(this);
+            this.connectivity = Fitness.allConnectivity(this);
+            this.dev = Fitness.allDeviation(this);
         }
 
 
     }
+    public Edge topSegmentEdge(Segment seg){
+        double lowestDistance = 1000000;
+        Edge topEdge = null;
+
+        for(Pixel p : seg.getPixels()){
+            for(Pixel neighbour : p.directionalNeighbours().values()){
+                if(seg.hasPixel(neighbour) == true){
+                    Edge temporaryEdge = new Edge(p, neighbour);
+                    if(temporaryEdge.distance < lowestDistance){
+                        topEdge = temporaryEdge;
+                        lowestDistance = temporaryEdge.distance;
+                    }
+                }
+            }
+        }
+        return topEdge;
+    }
+
+    public Edge randomSegmentEdge(Segment seg){
+        List<Edge> potentialEdges = new ArrayList<>();
+        for(Pixel p: seg.getPixels()){
+            for(Pixel neighbour: p.directionalNeighbours().values()){
+                if(seg.hasPixel(neighbour) == true){
+                    potentialEdges.add(new Edge(p, neighbour));
+                }
+            }
+        }
+        if(potentialEdges.size() != 0){
+            int randomIndex = ThreadLocalRandom.current().nextInt(0, potentialEdges.size());
+            return potentialEdges.get(randomIndex);
+        }
+        return null;
+    }
+
+    public void segmentMergeSmallRecursive(int counter){
+        List<Segment> allowedSegments = new ArrayList<>();
+        for(Segment seg : this.segments){
+            if(Settings.allowedSegmentSize < seg.getPixels().size()){
+                allowedSegments.add(seg);
+            }
+        }
+        if(this.previous == allowedSegments.size()){
+            counter++;
+        }
+        if(Settings.allowedSegmentSize < counter || allowedSegments.size() == 0){
+            return;
+        }
+        for(Segment seg : allowedSegments){
+            Edge e = topSegmentEdge(seg);
+            if(e != null){
+                //riktig rekkefølge?
+                changeGenotype(e.from, e.to);
+            }
+        }
+        this.previous = allowedSegments.size();
+        this.makeSegments();
+        segmentMergeSmallRecursive(counter);
+    }
+    public void changeGenotype(Pixel from, Pixel to){
+        if(from.equals(to)){
+            this.genotype.set(Utils.toIndexGenotype(from.width, from.height, xLength), Gene.NONE);
+            return;
+        }
+        this.genotype.set(Utils.toIndexGenotype(to.width, to.height, xLength), Gene.fromVector(from.width-to.width, from.height-to.height));
+
+    }
+
     public List<Segment> getSegments(){
         return segments;
     }

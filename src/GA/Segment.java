@@ -66,6 +66,9 @@ public class Segment {
     public double getConnectivity() {
         return connectivity;
     }
+    public void addAllPixels(Set<Pixel>pixels){
+        this.pixels.addAll(pixels);
+    }
 
     public void setConnectivity(double connectivity) {
         this.connectivity = connectivity;
