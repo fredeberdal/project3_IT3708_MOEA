@@ -1,7 +1,12 @@
 package Utils;
 
+import GA.Gene;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Pixel {
     public final RGB color;
@@ -18,42 +23,30 @@ public class Pixel {
     public Map<Integer, Pixel> getNeighbours() { return new HashMap<>(neighbours); }
     public void setNeighbours(Map<Integer, Pixel> neighbours) { this.neighbours = neighbours; }
 
-
-    /*
-    Må nok implementeres når vi vet hva de skal brukes til
-
-    public List<Gene> getValidGenes(){
-        return getCardinalNeighbours().entrySet()
-                                      .stream()
-                                      .filter(entry -> entry.getValue() != null)
-                                      .map(Entry::getKey)
-                                      .map(Gene::fromNumber)
-                                      .collect(Collectors.toList());
+    public Map<Integer, Pixel> directionalNeighbours() {
+        return neighbours.entrySet().stream()
+                .filter(e -> e.getKey() < 5 && e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-        public Map<Integer, Pixel> getCardinalNeighbours() {
-        return neighbours.entrySet()
-                         .stream()
-                         .filter(entry -> entry.getKey() < 5 && entry.getValue() != null)
-                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    public Pixel getCardinalNeighbour(Gene gene) {
+    // Kan evt lage en metode som tar inn en int direction i stedet.
+    public Pixel directionalNeighbour(Gene gene) {
         return switch(gene) {
             case RIGHT -> neighbours.get(1);
-            case LEFT  -> neighbours.get(2);
-            case UP    -> neighbours.get(3);
-            case DOWN  -> neighbours.get(4);
-            case NONE  -> this;
+            case LEFT -> neighbours.get(2);
+            case UP -> neighbours.get(3);
+            case DOWN -> neighbours.get(4);
+            case NONE -> this;
         };
     }
 
-    DE UNDER BLE IKKE BRUKT AV OWREN
-
-    public Pixel getCardinalNeighbour(int direction){
-        return direction == 0 ? this : neighbours.get(direction);
+    public List<Gene> getValidGenes() {
+        return directionalNeighbours().entrySet().stream().filter(e -> e.getValue() != null)
+                .map(Map.Entry::getKey).map(Gene::fromInt).collect(Collectors.toList());
     }
 
+
+    // Usikker på om disse overridene er nødvendige. Ble ikke brukt?
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -62,13 +55,12 @@ public class Pixel {
             return false;
         }
         Pixel pixel = (Pixel) o;
-        return Objects.equals(color, pixel.color) && x == pixel.x && y == pixel.y;
+        return Objects.equals(color, pixel.color) && width == pixel.width && height == pixel.height;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, x, y);
+        return Objects.hash(color, width, height);
     }
-     */
 
 }
