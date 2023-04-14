@@ -1,9 +1,13 @@
 package GA;
 
 import Utils.Pixel;
+import Utils.Tuple;
+import Utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Individual {
     private final List<Gene> genotype;
@@ -28,6 +32,31 @@ public class Individual {
     }
 
     public void makeSegments(){
+        Pixel currentPixel;
+        int size = genotype.size();
+        int index;
+        List<Segment> temporarySegments = new ArrayList<>();
+        boolean [] nodesVisited = new boolean[size];
+        for(int i = 0; i < nodesVisited.length; i++){
+            nodesVisited[i] = false;
+        }
+        Set<Pixel> seg;
+        for(int j = 0; j < size; j++){
+            if(nodesVisited[j] == false){
+                seg = new HashSet<>();
+                Tuple<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, xLength);
+
+                currentPixel = this.pixels[indexPixel.r][indexPixel.l];
+                seg.add(currentPixel);
+
+                nodesVisited[j] = true;
+
+
+            }else{
+
+            }
+        }
+
 
     }
     public List<Segment> getSegments(){
