@@ -50,7 +50,17 @@ public class Individual {
                 seg.add(currentPixel);
 
                 nodesVisited[j] = true;
+                currentPixel = currentPixel.directionalNeighbour(genotype.get(j));
+                index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
+                while(nodesVisited[index] == false){
+                    seg.add(currentPixel);
+                    currentPixel = currentPixel.directionalNeighbour(genotype.get(index));
+                    nodesVisited[index] = true;
+                    index = Utils.toPixelCoordinates(currentPixel.width, currentPixel.height, xLength);
+                }
+                if(this.pixels[indexPixel.r][indexPixel.l] != currentPixel){
 
+                }
 
             }else{
 
