@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Individual {
     private final List<Gene> genotype;
@@ -21,6 +22,7 @@ public class Individual {
         this.pixels = pixels;
         this.yLength = pixels.length;
         this.xLength = pixels[0].length;
+        makeSegments();
     }
     public Individual(Pixel[][] pixels, int numberOfSeg) {
         this.pixels = pixels;
@@ -28,6 +30,7 @@ public class Individual {
         this.yLength = pixels.length;
         this.xLength = pixels[0].length;
         this.genotype = new ArrayList<>();
+        makeSegments();
     }
 
     public void makeSegments(){
@@ -80,7 +83,35 @@ public class Individual {
             this.dev = Fitness.allDeviation(this);
         }
 
+    }
 
+    public void primsMST(){
+        int sumOfNodes = xLength * yLength;
+        int randomX = ThreadLocalRandom.current().nextInt(xLength);
+        int randomY = ThreadLocalRandom.current().nextInt(yLength);
+
+        for(int i = 0; i<sumOfNodes; i++){
+            this.genotype.add(Gene.NONE);
+        }
+    }
+
+    public void segmentMergeMutation(){
+        List<Segment> allowedSegments = segments.stream().filter(seg -> seg.getPixels().size() < Settings.allowedSegmentSize).toList();
+        if(allowedSegments.size() != 0){
+            int random = ThreadLocalRandom.current().nextInt(allowedSegments.size());
+            Segment randomSegment = allowedSegments.get(random);
+            Edge e = null;
+            if(Settings.bestSegment){
+                e = topSegmentEdge(randomSegment);
+            }else{
+                e = randomSegmentEdge(randomSegment);
+            }
+            if(e != null){
+                changeGenotype(e);
+                makeSegments();
+            }
+
+        }
     }
     public Edge topSegmentEdge(Segment seg){
         double lowestDistance = 1000000;
@@ -132,15 +163,16 @@ public class Individual {
         for(Segment seg : allowedSegments){
             Edge e = topSegmentEdge(seg);
             if(e != null){
-                //riktig rekkefølge?
-                changeGenotype(e.from, e.to);
+                changeGenotype(e);
             }
         }
         this.previous = allowedSegments.size();
         this.makeSegments();
         segmentMergeSmallRecursive(counter);
     }
-    public void changeGenotype(Pixel from, Pixel to){
+    public void changeGenotype(Edge e){
+        Pixel from = e.from;
+        Pixel to = e.to;
         if(from.equals(to)){
             this.genotype.set(Utils.toIndexGenotype(from.width, from.height, xLength), Gene.NONE);
             return;
