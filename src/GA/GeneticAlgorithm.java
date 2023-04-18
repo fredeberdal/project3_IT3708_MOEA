@@ -1,6 +1,7 @@
 package GA;
 
 import ImageSegment.ImageSegmentationIO;
+import ImageSegment.SegmentationImgIO;
 import Utils.Pixel;
 import Utils.Settings;
 import Utils.Tuple;
@@ -18,8 +19,8 @@ public class GeneticAlgorithm {
     private List<List<Individual>> popRanked;
     private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool((Settings.threadSize));
 
-    public GeneticAlgorithm (ImageSegmentationIO imageIO) {
-        this.pixels = imageIO.getPixels();
+    public GeneticAlgorithm (SegmentationImgIO segImgIo) {
+        this.pixels = segImgIo.getPixels();
     }
 
     public List<Individual> getPop() {

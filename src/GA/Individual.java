@@ -27,6 +27,8 @@ public class Individual {
         this.yLength = pixels.length;
         this.xLength = pixels[0].length;
         this.genotype = new ArrayList<>();
+
+        //mulignes kjøre variant for overflødige segments
         makeSegments();
     }
 
