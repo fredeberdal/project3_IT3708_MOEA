@@ -2,10 +2,7 @@ package GA;
 
 import Utils.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -93,6 +90,35 @@ public class Individual {
         for(int i = 0; i<sumOfNodes; i++){
             this.genotype.add(Gene.NONE);
         }
+        Set<Pixel> nodesVisited = new HashSet<>();
+        List<Edge> edges = new ArrayList<>();
+        Pixel curr = this.pixels[randomY][randomX];
+
+        PriorityQueue<Edge> queue = new PriorityQueue<>();
+        while(sumOfNodes>nodesVisited.size()){
+            if(nodesVisited.contains(curr) == false){
+                nodesVisited.add(curr);
+                queue.addAll(this.makeEdges(curr));
+            }
+            Edge edge = queue.poll();
+            if(nodesVisited.contains(edge.to)){
+                changeGenotype(edge);
+                edges.add(edge);
+            }
+            curr = edge.to;
+        }
+
+        Collections.sort(edges);
+        for(int j = 0; j < numberOfSeg; j++){
+            Edge edgeRemoved = edges.get(j);
+            changeGenotype(edgeRemoved);
+        }
+    }
+    public List<Edge> makeEdges(Pixel p){
+        List<Edge> edges = new ArrayList<>();
+        //usikker på objects::nonull
+        edges = Gene.cardinalDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
+        return edges;
     }
 
     public void segmentMergeMutation(){
