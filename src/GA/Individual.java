@@ -207,6 +207,21 @@ public class Individual {
 
     }
 
+    public boolean strictlyBetterFit(Individual i) {
+        boolean temp;
+        if (Settings.useNSGA) {
+            temp = this.getRating() < i.getRating();
+        } else {
+            temp = this.getFitnessWithWeights() < i.getFitnessWithWeights();
+        }
+        return temp;
+    }
+
+    public boolean dominates (Individual ind) {
+        return this.connectivity < ind.connectivity && this.edgeValue < ind.edgeValue && this.dev < ind.dev;
+    }
+
+
     public List<Segment> getSegments(){
         return segments;
     }
@@ -289,5 +304,10 @@ public class Individual {
 
     public void setCrowdingDist(double crowdingDist) {
         this.crowdingDist = crowdingDist;
+    }
+
+    public double getFitnessWithWeights() {
+        double sum = this.edgeValue * Settings.edgeValue + this.dev * Settings.dev + this.connectivity * Settings.connectivity;
+        return sum;
     }
 }
