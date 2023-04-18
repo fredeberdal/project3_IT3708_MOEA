@@ -16,25 +16,24 @@ public class RGB {
     }
 
     // Skal brukes når vi skal lese av bildene
-    public static RGB green = new RGB (0, 255, 0);
     public static RGB black = new RGB (0, 0, 0);
+    public static RGB green = new RGB (0, 255, 0);
     public static RGB white = new RGB (255, 255, 255);
 
     public int findRGBInt () { return new Color(r, g, b).getRGB(); }
 
-        @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof RGB)) {
-            return false;
-        }
-        RGB rgb = (RGB) o;
-        return r == rgb.r && g == rgb.g && b == rgb.b;
-    }
-
     @Override
     public int hashCode() { return Objects.hash(r, g, b); }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == this)  {return true;}
+        if (!(object instanceof RGB)) {return false;}
 
+        RGB rgb = (RGB) object;
+
+        return r == rgb.r
+                && b == rgb.b
+                && g == rgb.g;
+    }
 }

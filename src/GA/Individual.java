@@ -117,7 +117,7 @@ public class Individual {
     public List<Edge> makeEdges(Pixel p){
         List<Edge> edges = new ArrayList<>();
         //usikker på objects::nonull
-        edges = Gene.cardinalDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
+        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
         return edges;
     }
 
@@ -205,6 +205,13 @@ public class Individual {
         }
         this.genotype.set(Utils.toIndexGenotype(to.width, to.height, xLength), Gene.fromVector(from.width-to.width, from.height-to.height));
 
+    }
+
+    public boolean edgeChecker(Pixel p){
+        boolean isEdge = false;
+        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
+        isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
+        return isEdge;
     }
 
     public List<Segment> getSegments(){
