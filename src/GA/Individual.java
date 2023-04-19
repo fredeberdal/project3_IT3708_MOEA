@@ -6,13 +6,17 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static Utils.SegmentCriteria.CONNECTIVITY;
+import static Utils.SegmentCriteria.DEVIATION;
+import static Utils.Settings.*;
+
 public class Individual {
     private final List<Gene> genotype;
     private final Pixel[][] pixels;
     private List<Segment> segments = new ArrayList<>();
     private int rating, xLength, yLength, numberOfSeg;
     private int previous = 0;
-    private double edgeValue, connectivity, dev, crowdingDist;
+    public double edgeValue, connectivity, dev, crowdingDist;
 
     public Individual(List<Gene> genotype, Pixel [][] pixels) {
         this.genotype = genotype;
@@ -119,7 +123,7 @@ public class Individual {
     public List<Edge> makeEdges(Pixel p){
         List<Edge> edges = new ArrayList<>();
         //usikker på objects::nonull
-        edges = Gene.cardinalDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
+        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
         return edges;
     }
 
@@ -229,7 +233,15 @@ public class Individual {
     public boolean dominates (Individual ind) {
         return this.connectivity < ind.connectivity && this.edgeValue < ind.edgeValue && this.dev < ind.dev;
     }
-
+    public double getSegCriteriaValue(SegmentCriteria criteria) { // mulig å sløyfe på noen måte?
+        if (criteria == CONNECTIVITY) {
+            return connectivity;
+        } else if (criteria == DEVIATION) {
+            return dev;
+        } else {
+            return edgeValue;
+        }
+    }
 
     public List<Segment> getSegments(){
         return segments;
