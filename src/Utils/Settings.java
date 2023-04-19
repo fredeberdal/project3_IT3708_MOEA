@@ -14,6 +14,7 @@ public class Settings {
     public static final String file = "blablafilnavn";
 
     public static final boolean runNSGA = true;
+    public static final boolean segmentMerge = true;
     public static final double crossoverProb = 0.8;
 
     // Parameters for weighted fitness

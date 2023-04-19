@@ -18,9 +18,10 @@ public class main {
     public static void main(String[] args) {
         String file = Settings.file;
         boolean runNSGA = Settings.runNSGA;
+        boolean segmentMerge = Settings.segmentMerge;
 
         List<Individual> bestIndividuals = new ArrayList<>();
-        ImgSegmentationIO segImgIo = new ImgSegmentationIO(file);
+        ImgSegmentationIO imgSegmentationIO = new ImgSegmentationIO(file);
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(segImgIo);
 
         if(runNSGA){
@@ -29,14 +30,18 @@ public class main {
         }else{
             geneticAlgorithm.runGA();
 
-            List<Individual> population = geneticAlgorithm.getPop();
+            bestIndividuals = geneticAlgorithm.getPop();
             //Usikker om denne funker
-            population.sort(Comparator.comparingDouble(p -> p.getFitnessWithWeights()));
-            population.subList(0,4);
+            bestIndividuals.sort(Comparator.comparingDouble(p -> p.getFitnessWithWeights()));
+            bestIndividuals.subList(0,4);
         }
         Path bPath = Path.of("path/" + file);
         Path gPath = Path.of("path/" + file);
-
+        for(Individual ind : bestIndividuals){
+            exe.execute(()-> {
+                System.out.println("Bajs");
+            });
+        }
 
     }
 }
