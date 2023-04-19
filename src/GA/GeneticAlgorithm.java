@@ -13,11 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static Utils.SegmentCriteria.CONNECTIVITY;
-import static Utils.SegmentCriteria.DEVIATION;
-import static Utils.SegmentCriteria.EDGEVALUE;
-import static Utils.Settings.*;
-
 public class GeneticAlgorithm {
 
     private List<List<Individual>> popRanked;
@@ -175,12 +170,12 @@ public class GeneticAlgorithm {
         this.pop.clear();
         for (List<Individual> paretoFront : this.popRanked) { // endre navn på params
             assignCrowdingDist(paretoFront);
-            if (paretoFront.size() <= popSize - this.pop.size()) {
+            if (paretoFront.size() <= Settings.popSize - this.pop.size()) {
                 this.pop.addAll(paretoFront);
             } else {
                 List<Individual> temp = new ArrayList<>(paretoFront);
                 temp.sort((a,b) -> Double.compare(b.getCrowdingDist(), a.getCrowdingDist()));
-                this.pop.addAll(temp.subList(0, popSize - this.pop.size()));
+                this.pop.addAll(temp.subList(0, Settings.popSize - this.pop.size()));
             }
         }
     }
