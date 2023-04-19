@@ -119,7 +119,7 @@ public class Individual {
     public List<Edge> makeEdges(Pixel p){
         List<Edge> edges = new ArrayList<>();
         //usikker på objects::nonull
-        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
+        edges = Gene.cardinalDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
         return edges;
     }
 
@@ -209,6 +209,13 @@ public class Individual {
 
     }
 
+    public boolean edgeChecker(Pixel p){
+        boolean isEdge = false;
+        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
+        isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
+        return isEdge;
+    }
+
     public boolean strictlyBetterFit(Individual i) {
         boolean temp;
         if (Settings.useNSGA) {
@@ -221,15 +228,6 @@ public class Individual {
 
     public boolean dominates (Individual ind) {
         return this.connectivity < ind.connectivity && this.edgeValue < ind.edgeValue && this.dev < ind.dev;
-    }
-
-
-
-    public boolean edgeChecker(Pixel p){
-        boolean isEdge = false;
-        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
-        isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
-        return isEdge;
     }
 
 
