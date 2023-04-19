@@ -1,7 +1,7 @@
 package GA;
 
 import ImageSegment.ImageSegmentationIO;
-import ImageSegment.SegmentationImgIO;
+import ImageSegment.ImgSegmentationIO;
 import Utils.Pixel;
 import Utils.Settings;
 import Utils.Tuple;
@@ -19,7 +19,7 @@ public class GeneticAlgorithm {
     private Pixel[][] pixels;
     private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool((Settings.threadSize));
 
-    public GeneticAlgorithm (SegmentationImgIO segImgIo) {
+    public GeneticAlgorithm (ImgSegmentationIO segImgIo) {
         this.pixels = segImgIo.getPixels();
     }
 

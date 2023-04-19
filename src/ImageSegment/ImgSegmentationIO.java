@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SegmentationImgIO {
+public class ImgSegmentationIO {
 
     private int width;
     private int height;
@@ -25,7 +25,7 @@ public class SegmentationImgIO {
     public int getHeight() { return this.height; }
     public Pixel[][] getPixels() { return this.pixels; }
 
-    public SegmentationImgIO(String file) {
+    public ImgSegmentationIO(String file) {
         try (InputStream input = new FileInputStream(new File("project3_IT3708_MOEA/training/" + file + "/Test image.jpg"))) {
             BufferedImage img = ImageIO.read(input);
             this.height = img.getHeight();
