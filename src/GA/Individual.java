@@ -6,13 +6,17 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static Utils.SegmentCriteria.CONNECTIVITY;
+import static Utils.SegmentCriteria.DEVIATION;
+import static Utils.Settings.*;
+
 public class Individual {
     private final List<Gene> genotype;
     private final Pixel[][] pixels;
     private List<Segment> segments = new ArrayList<>();
     private int rating, xLength, yLength, numberOfSeg;
     private int previous = 0;
-    private double edgeValue, connectivity, dev, crowdingDist;
+    public double edgeValue, connectivity, dev, crowdingDist;
 
     public Individual(List<Gene> genotype, Pixel [][] pixels) {
         this.genotype = genotype;
@@ -209,6 +213,13 @@ public class Individual {
 
     }
 
+    public boolean edgeChecker(Pixel p){
+        boolean isEdge = false;
+        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
+        isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
+        return isEdge;
+    }
+
     public boolean strictlyBetterFit(Individual i) {
         boolean temp;
         if (Settings.useNSGA) {
@@ -222,16 +233,15 @@ public class Individual {
     public boolean dominates (Individual ind) {
         return this.connectivity < ind.connectivity && this.edgeValue < ind.edgeValue && this.dev < ind.dev;
     }
-
-
-
-    public boolean edgeChecker(Pixel p){
-        boolean isEdge = false;
-        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
-        isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
-        return isEdge;
+    public double getSegCriteriaValue(SegmentCriteria criteria) { // mulig å sløyfe på noen måte?
+        if (criteria == CONNECTIVITY) {
+            return connectivity;
+        } else if (criteria == DEVIATION) {
+            return dev;
+        } else {
+            return edgeValue;
+        }
     }
-
 
     public List<Segment> getSegments(){
         return segments;

@@ -1,16 +1,22 @@
 package GA;
 
-import ImageSegment.ImageSegmentationIO;
 import ImageSegment.ImgSegmentationIO;
+
 import Utils.Pixel;
 import Utils.Settings;
 import Utils.Tuple;
 import Utils.Utils;
+import Utils.SegmentCriteria;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import static Utils.SegmentCriteria.CONNECTIVITY;
+import static Utils.SegmentCriteria.DEVIATION;
+import static Utils.SegmentCriteria.EDGEVALUE;
+import static Utils.Settings.*;
 
 public class GeneticAlgorithm {
 
@@ -95,7 +101,32 @@ public class GeneticAlgorithm {
         }
     }
 
+    private void assignCrowdingDist(List<Individual> paretoFront) { // Endre param navn
+        for (Individual ind : paretoFront) {
+            ind.setCrowdingDist(0);
+        }
+        for (SegmentCriteria criteria : SegmentCriteria.values()) {
+            assignCrowdingDistToInd(paretoFront, criteria);
+        }
+    }
 
+    private void assignCrowdingDistToInd(List<Individual> paretoFront, SegmentCriteria criteria) { // Endre param navn
+        paretoFront.sort(SegmentCriteria.individualComparator(criteria));
+        Individual maxInd = paretoFront.get(0);
+        Individual minInd = paretoFront.get(paretoFront.size());
+        maxInd.setCrowdingDist(Integer.MAX_VALUE);
+        minInd.setCrowdingDist(Integer.MAX_VALUE);
+
+        double minMaxCriteriaDiffInSeg = maxInd.getSegCriteriaValue(criteria);
+        minMaxCriteriaDiffInSeg -= minInd.getSegCriteriaValue(criteria);
+        double differenceInCriteria;
+        for (int i = 1; i < paretoFront.size(); i++) {
+            differenceInCriteria = paretoFront.get(i+1).getSegCriteriaValue(criteria);
+            differenceInCriteria -= paretoFront.get(i-1).getSegCriteriaValue(criteria);
+            differenceInCriteria /= minMaxCriteriaDiffInSeg;
+            paretoFront.get(i).setCrowdingDist(paretoFront.get(i).getCrowdingDist() + differenceInCriteria);
+        }
+    }
 
     public void makePop(){
         System.out.println("Making a pop");
@@ -127,7 +158,7 @@ public class GeneticAlgorithm {
         int rank = 1;
         List<List<Individual>> rankedPoP = new ArrayList<>();
         while (pop.size() > 0) {
-            List<Individual> domSet = domenatingSet(pop);
+            List<Individual> domSet = dominatingSet(pop);
             for (Individual i : domSet) {
                 i.setRating(rank);
             }
@@ -140,21 +171,35 @@ public class GeneticAlgorithm {
         }
         return rankedPoP;
     }
-    private List<Individual> domenatingSet(List<Individual> pop) {
-        List<Individual> domList = new ArrayList<>();
-        domList.add(pop.get(0));
+    private void newPopFromRank() {
+        this.pop.clear();
+        for (List<Individual> paretoFront : this.popRanked) { // endre navn på param
+
+        }
+    }
+
+
+    private List<Individual> dominatingSet(List<Individual> pop) {
+        List<Individual> notDomList = new ArrayList<>();
+        notDomList.add(pop.get(0)); // First member in pop
         Set<Individual> dominatedSet = new HashSet<>();
         for (Individual ind : pop) {
-            if (dominatedSet.contains(ind)) {
-                domList.add(ind);
-                for (Individual individual : domList) {
-                    if (ind.dominates(individual)) {
+            if (dominatedSet.contains(ind)) {}
+            notDomList.add(ind);
+                for (Individual notDominatedInd : notDomList) {
+                    if (dominatedSet.contains(ind) || notDominatedInd == ind) {
+                    } else if (ind.dominates(notDominatedInd)) {
+                    dominatedSet.add(notDominatedInd);
+                    } else if (notDominatedInd.dominates(ind)) { // Kan nok endre rekkefølgen på not her når ting funker.
                         dominatedSet.add(ind);
+                        break;
                     }
                 }
             }
+        notDomList.removeAll(dominatedSet);
+        return notDomList;
         }
-    }
+
 
     public List<Individual> parentSelection(List<Individual> pop) {
         List<Individual> chosen = new ArrayList<>();
