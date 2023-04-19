@@ -22,7 +22,7 @@ public class main {
 
         List<Individual> bestIndividuals = new ArrayList<>();
         ImgSegmentationIO imgSegmentationIO = new ImgSegmentationIO(file);
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(segImgIo);
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(imgSegmentationIO);
 
         if(runNSGA){
             geneticAlgorithm.runNSGA();
