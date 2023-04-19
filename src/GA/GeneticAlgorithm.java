@@ -173,8 +173,15 @@ public class GeneticAlgorithm {
     }
     private void newPopFromRank() {
         this.pop.clear();
-        for (List<Individual> paretoFront : this.popRanked) { // endre navn på param
-
+        for (List<Individual> paretoFront : this.popRanked) { // endre navn på params
+            assignCrowdingDist(paretoFront);
+            if (paretoFront.size() <= popSize - this.pop.size()) {
+                this.pop.addAll(paretoFront);
+            } else {
+                List<Individual> temp = new ArrayList<>(paretoFront);
+                temp.sort((a,b) -> Double.compare(b.getCrowdingDist(), a.getCrowdingDist()));
+                this.pop.addAll(temp.subList(0, popSize - this.pop.size()));
+            }
         }
     }
 
