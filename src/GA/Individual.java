@@ -207,6 +207,13 @@ public class Individual {
 
     }
 
+    public boolean edgeChecker(Pixel p){
+        boolean isEdge = false;
+        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
+        isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
+        return isEdge;
+    }
+
     public boolean strictlyBetterFit(Individual i) {
         boolean temp;
         if (Settings.useNSGA) {

@@ -8,6 +8,7 @@ import Utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class GeneticAlgorithm {
@@ -30,6 +31,7 @@ public class GeneticAlgorithm {
     }
 
     public void runGA() {
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
         int genCount = 0;
         makePop();
         while (genCount < Settings.genSpan) {
@@ -38,8 +40,8 @@ public class GeneticAlgorithm {
             List<Individual> parents = parentSelection(this.pop);
             for (int i = 0; i < Settings.popSize / 2; i++)  {
                 executor.execute(() -> {  // Denne burde endres
-                    Individual p1 = parents.get(Utils.randomInt(parents.size()));
-                    Individual p2 = parents.get(Utils.randomInt(parents.size()));
+                    Individual p1 = parents.get(rand.nextInt(parents.size()));
+                    Individual p2 = parents.get(rand.nextInt(parents.size()));
                     Tuple<Individual, Individual> offspring = crossover(p1, p2);
                     newPop.add(offspring.l);
                     newPop.add(offspring.r);
@@ -60,6 +62,7 @@ public class GeneticAlgorithm {
 
 
     public void runNSGA() {
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
         int genCount = 0;
         makePop();
         rankPop(this.pop);
@@ -69,8 +72,8 @@ public class GeneticAlgorithm {
             List<Individual> parents = parentSelection(this.pop);
             for (int i = 0; i < Settings.popSize / 2; i++) {
                 executor.execute(() ->{ // Denne burde endres
-                    Individual p1 = parents.get(Utils.randomInt(parents.size()));
-                    Individual p2 = parents.get(Utils.randomInt(parents.size()));
+                    Individual p1 = parents.get(rand.nextInt(parents.size()));
+                    Individual p2 = parents.get(rand.nextInt(parents.size()));
                     Tuple<Individual, Individual> offspring = crossover(p1, p2);
                     newPop.add(offspring.l);
                     newPop.add(offspring.r);
@@ -80,7 +83,7 @@ public class GeneticAlgorithm {
                 // Sync up??
             }
             for (Individual ind : newPop) {
-                if (Utils.randomDouble() < Settings.mutationProb) {
+                if (ThreadLocalRandom.current().nextDouble() < Settings.mutationProb) {
                     ind.segmentMergeMutation();
                 }
             }

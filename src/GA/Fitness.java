@@ -54,10 +54,4 @@ public class Fitness {
     public static double deviation(Segment seg){
         return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, (sum, el) -> sum+el);
     }
-
-
-
-
-
-
 }
