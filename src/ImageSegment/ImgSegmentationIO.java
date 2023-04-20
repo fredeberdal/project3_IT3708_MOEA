@@ -34,12 +34,12 @@ public class ImgSegmentationIO {
 
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    final Color color = new Color(img.getRGB(j, i));
-                    final Pixel pixel = new Pixel(new RGB((color.getRed()), (color.getGreen()), color.getBlue()), j, i);
+                    Color color = new Color(img.getRGB(j, i));
+                    Pixel pixel = new Pixel(new RGB((color.getRed()), (color.getGreen()), color.getBlue()), j, i);
                     pixels[i][j] = pixel;
                 }
             }
-            // Pixels er omvendt representert enn en typisk 2D-array. (i = width, j = height)
+            // Pixels er omvendt representert enn en typisk 2D-array. (j = width, i = height)
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
                     pixels[i][j].setNeighbours(getNeighbours(j, i));
@@ -77,6 +77,7 @@ public class ImgSegmentationIO {
         if (height+1 < this.height && width-1 >= 0) {
             neighbours.put(8, pixels[height+1][width-1]);
         }
+
         return neighbours;
     }
 
@@ -85,15 +86,16 @@ public class ImgSegmentationIO {
     }
 
     public void save (String pathname, Individual ind, String color, boolean checker) {
-        if (color != "green" && color != "black") {throw new IllegalArgumentException("Color is not black or green.");}
+        if (color != "g" && color != "b") {throw new IllegalArgumentException("Color is not black or green.");}
         int segColor;
+        int segSize = ind.getSegments().size();
         String folder;
         String sumOfSeg;
         String suffix;
         String path;
         String txtSuffix;
 
-        if(color == "black"){
+        if(color == "b"){
             segColor = RGB.black.findRGBInt();
             folder = "";
             suffix = "black";
@@ -104,11 +106,9 @@ public class ImgSegmentationIO {
         }
         sumOfSeg = ind.getNumberOfSeg() + "_" + ind.getConnectivity() + "_" + ind.getDev() + "_" + ind.getEdgeValue();
         if(checker){
-            path = "project3_IT3708_MOEA/evaluator/Student_Segmentation_Files" + folder + "/" + pathname + "/" +
-                    suffix + debugImageCount++ + ".jpg";
+            path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/" + debugImageCount++ + ".jpg";
         }else{
-            path = "project3_IT3708_MOEA/evaluator/Student_Segmentation_Files" + folder + "/" + pathname + "/" +
-                    suffix + sumOfSeg + ".jpg";
+            path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + segSize + ".jpg";
         }
 
         System.out.println("Saving file for path:  " + path);
@@ -120,9 +120,9 @@ public class ImgSegmentationIO {
             for (int i = 0; i < getHeight(); i++) {
                 for (int j = 0; j < getWidth(); j++) {
                     if (ind.edgeChecker(pixels[i][j])) {
-                        img.setRGB(i, j, segColor);
+                        img.setRGB(j, i, segColor);
                     } else {
-                        img.setRGB(i, j, fetchBackground(pixels[i][j], color));
+                        img.setRGB(j, i, fetchBackground(pixels[i][j], color));
                     }
                 }
             }

@@ -29,7 +29,7 @@ public class Segment {
     }
 
     public RGB getCentroid() {
-        return centroid;
+        return this.centroid;
     }
     public RGB locateCentroid(){
         int size = this.pixels.size();

@@ -37,8 +37,9 @@ public class GeneticAlgorithm {
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         int genCount = 0;
         makePop();
+
         while (genCount < Settings.genSpan) {
-            System.out.println(genCount); // For oversikt
+            System.out.println("Generation: " + genCount); // For oversikt
             List<Individual> newPop = Collections.synchronizedList(new ArrayList<>());
             List<Individual> parents = parentSelection(this.pop);
             for (int i = 0; i < Settings.popSize / 2; i++)  {
@@ -139,6 +140,7 @@ public class GeneticAlgorithm {
         while (!temporaryEx.isTerminated())  {
             // Sync up ?? Vi mø prøve uten disse
         }
+        System.out.println("Antall segmenter: " + newPop.get(0).getSegments().size());
         System.out.println("Finished making pop");
         this.pop = newPop;
     }
@@ -146,7 +148,7 @@ public class GeneticAlgorithm {
         if (Utils.randomDouble() < Settings.mutationProb) {
             int index = Utils.randomInt(genes.size());
             Tuple<Integer, Integer> individualPixel = Utils.toPixelCoordinates(index, this.pixels[0].length); //Sjekk bruken av toPixelCoordinates
-            List<Gene> allowedGenes = this.pixels[individualPixel.l][individualPixel.r].getValidGenes();
+            List<Gene> allowedGenes = this.pixels[individualPixel.r][individualPixel.l].getValidGenes();
             genes.set(index, allowedGenes.get(Utils.randomInt(allowedGenes.size()))); // Rand
         }
         return genes;
@@ -238,18 +240,31 @@ public class GeneticAlgorithm {
     public Tuple<Individual, Individual> crossover (Individual p1, Individual p2) {
         List<Gene> g1 = p1.getGenotype();
         List<Gene> g2 = p2.getGenotype();
+
         if (Utils.randomDouble() < Settings.crossoverProb) {
             int length = g1.size();
-            // int indexPoint = Utils.randomInt(length);
-            int indexPoint = ThreadLocalRandom.current().nextInt(1, length);
-            List<Gene> temporary = new ArrayList<>(g1.subList(indexPoint, length)); // Kan flytte i en hjelpemetode
-            g1.subList(indexPoint, length).clear(); // clear??
-            g1.addAll(g2.subList(indexPoint, length));
-            g2.subList(indexPoint, length).clear();
-            g2.addAll(temporary);
+
+            //int indexPoint = Utils.randomInt(length);
+            System.out.println(length);
+            System.out.println("Inne i crossover");
+            int indexPoint = ThreadLocalRandom.current().nextInt(1,length);
+            List<Gene> p1Segment1 = new ArrayList<>(g1.subList(0, indexPoint));
+            List<Gene> p1Segment2 = new ArrayList<>(g1.subList(indexPoint, length));
+            List<Gene> p2Segment1 = new ArrayList<>(g2.subList(0, indexPoint));
+            List<Gene> p2Segment2 = new ArrayList<>(g2.subList(indexPoint, length));
+
+            g1 = new ArrayList<>();
+            g2 = new ArrayList<>();
+
+            g1.addAll(p1Segment1);
+            g1.addAll(p2Segment2);
+            g2.addAll(p2Segment1);
+            g2.addAll(p1Segment2);
         }
         g1 = mutateGeneRandomly(g1);
         g2 = mutateGeneRandomly(g2);
+        System.out.println(g1.size());
+        System.out.println(g2.size());
         return new Tuple<>(new Individual(g1, this.pixels), new Individual(g2, this.pixels));
     }
 
