@@ -39,9 +39,15 @@ public class main {
         Path gPath = Path.of("path/" + file);
         for(Individual ind : bestIndividuals){
             exe.execute(()-> {
-                System.out.println("Bajs");
+                if(segmentMerge){
+                    ind.segmentMergeSmallRecursive(0);
+                }
+
+                imgSegmentationIO.save(file, ind, "b");
+                imgSegmentationIO.save(file, ind, "g");
             });
         }
-
+        exe.shutdown();
+        System.out.println("Done");
     }
 }
