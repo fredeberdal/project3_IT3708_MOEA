@@ -33,6 +33,7 @@ public class Individual {
         this.genotype = new ArrayList<>();
 
         //mulignes kjøre variant for overflødige segments
+        primsMST();
         makeSegments();
     }
 
@@ -47,44 +48,45 @@ public class Individual {
         }
         Set<Pixel> seg;
         for(int j = 0; j < size; j++){
-            if(nodesVisited[j] == false){
-                seg = new HashSet<>();
-                Tuple<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, xLength);
+            if(nodesVisited[j]) {
+                continue;
+            }
+            seg = new HashSet<>();
+            Tuple<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, xLength);
 
-                currentPixel = this.pixels[indexPixel.r][indexPixel.l];
+            currentPixel = this.pixels[indexPixel.r][indexPixel.l];
+            seg.add(currentPixel);
+
+            nodesVisited[j] = true;
+            currentPixel = currentPixel.directionalNeighbour(genotype.get(j));
+            index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
+            while(nodesVisited[index] == false){
                 seg.add(currentPixel);
-
-                nodesVisited[j] = true;
-                currentPixel = currentPixel.directionalNeighbour(genotype.get(j));
+                currentPixel = currentPixel.directionalNeighbour(genotype.get(index));
+                nodesVisited[index] = true;
                 index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
-                while(nodesVisited[index] == false){
-                    seg.add(currentPixel);
-                    currentPixel = currentPixel.directionalNeighbour(genotype.get(index));
-                    nodesVisited[index] = true;
-                    index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
+            }
+            if(this.pixels[indexPixel.r][indexPixel.l] != currentPixel){
+                boolean notCurrent = false;
+                for(Segment s : temporarySegments){
+                    if(s.hasPixel(currentPixel)){
+                        s.addAllPixels(seg);
+                        notCurrent = true;
+                        break;
+                    }
                 }
-                if(this.pixels[indexPixel.r][indexPixel.l] != currentPixel){
-                    boolean notCurrent = false;
-                    for(Segment s : temporarySegments){
-                        if(s.hasPixel(currentPixel)){
-                            s.addAllPixels(seg);
-                            notCurrent = true;
-                            break;
-                        }
-                    }
-                    if(notCurrent == true){
-                        temporarySegments.add(new Segment(seg));
-                    }
-                }else{
+                if(notCurrent == true){
                     temporarySegments.add(new Segment(seg));
                 }
+            }else{
+                temporarySegments.add(new Segment(seg));
             }
-            this.segments = temporarySegments;
-            this.numberOfSeg = temporarySegments.size();
-            this.edgeValue = Fitness.allEdgeValue(this);
-            this.connectivity = Fitness.allConnectivity(this);
-            this.dev = Fitness.allDeviation(this);
         }
+        this.segments = temporarySegments;
+        this.numberOfSeg = temporarySegments.size();
+        this.edgeValue = Fitness.allEdgeValue(this);
+        this.connectivity = Fitness.allConnectivity(this);
+        this.dev = Fitness.allDeviation(this);
 
     }
 
@@ -244,19 +246,19 @@ public class Individual {
     }
 
     public List<Segment> getSegments(){
-        return segments;
+        return this.segments;
     }
 
     public List<Gene> getGenotype() {
-        return genotype;
+        return this.genotype;
     }
 
     public Pixel[][] getPixels() {
-        return pixels;
+        return this.pixels;
     }
 
     public int getRating() {
-        return rating;
+        return this.rating;
     }
 
     public void setRating(int rating) {
@@ -264,7 +266,7 @@ public class Individual {
     }
 
     public int getxLength() {
-        return xLength;
+        return this.xLength;
     }
 
     public void setxLength(int xLength) {
@@ -288,7 +290,7 @@ public class Individual {
     }
 
     public int getPrevious() {
-        return previous;
+        return this.previous;
     }
 
     public void setPrevious(int previous) {
@@ -296,7 +298,7 @@ public class Individual {
     }
 
     public double getEdgeValue() {
-        return edgeValue;
+        return this.edgeValue;
     }
 
     public void setEdgeValue(double edgeValue) {
@@ -304,7 +306,7 @@ public class Individual {
     }
 
     public double getConnectivity() {
-        return connectivity;
+        return this.connectivity;
     }
 
     public void setConnectivity(double connectivity) {
@@ -312,7 +314,7 @@ public class Individual {
     }
 
     public double getDev() {
-        return dev;
+        return this.dev;
     }
 
     public void setDev(double dev) {
@@ -320,7 +322,7 @@ public class Individual {
     }
 
     public double getCrowdingDist() {
-        return crowdingDist;
+        return this.crowdingDist;
     }
 
     public void setCrowdingDist(double crowdingDist) {

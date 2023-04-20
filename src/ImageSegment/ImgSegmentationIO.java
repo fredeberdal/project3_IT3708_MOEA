@@ -26,23 +26,24 @@ public class ImgSegmentationIO {
     public Pixel[][] getPixels() { return this.pixels; }
 
     public ImgSegmentationIO(String file) {
-        try (InputStream input = new FileInputStream(new File("project3_IT3708_MOEA/training/" + file + "/Test image.jpg"))) {
+        try {
+            InputStream input = new FileInputStream("training_images/" + file + "/Test image.jpg");
+
             BufferedImage img = ImageIO.read(input);
             this.height = img.getHeight();
             this.width = img.getWidth();
-            this.pixels = new Pixel[img.getWidth()][img.getHeight()];
-
+            this.pixels = new Pixel[img.getHeight()][img.getWidth()];
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    Color color = new Color(img.getRGB(i, j));
-                    Pixel pixel = new Pixel(new RGB((color.getRed()), (color.getGreen()), color.getBlue()), i, j);
+                    Color color = new Color(img.getRGB(j, i));
+                    Pixel pixel = new Pixel(new RGB((color.getRed()), (color.getGreen()), color.getBlue()), j, i);
                     pixels[i][j] = pixel;
                 }
             }
-            // Pixels er omvendt representert enn en typisk 2D-array. (x = width, y = height)
+            // Pixels er omvendt representert enn en typisk 2D-array. (j = width, i = height)
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    pixels[i][j].setNeighbours(getNeighbours(i, j));
+                    pixels[i][j].setNeighbours(getNeighbours(j, i));
                 }
             }
         } catch (IOException exception) {
@@ -53,22 +54,6 @@ public class ImgSegmentationIO {
     private Map<Integer, Pixel> getNeighbours(int width, int height) { // Lånt logikk
         Map<Integer, Pixel> neighbours = new HashMap<>();
 
-        if (height+1 < this.height)                     {
-            neighbours.put(4, pixels[height+1][width]);
-        }
-        if (height+1 < this.height && width+1 < this.width) {
-            neighbours.put(6, pixels[height+1][width+1]);
-        }
-        if (height-1 >= 0 && width-1 >= 0)                  {
-            neighbours.put(7, pixels[height-1][width-1]);
-        }
-        if (height-1 >= 0 && width+1 < this.height)          {
-            neighbours.put(5, pixels[height-1][width+1]);
-        }
-
-        if (height+1 < this.height && width-1 >= 0)         {
-            neighbours.put(8, pixels[height+1][width-1]);
-        }
         if (width+1 < this.width) {
             neighbours.put(1, pixels[height][width+1]);
         }
@@ -77,6 +62,23 @@ public class ImgSegmentationIO {
         }
         if (height-1 >= 0) {
             neighbours.put(3, pixels[height-1][width]);
+        }
+        if (height+1 < this.height)                     {
+            neighbours.put(4, pixels[height+1][width]);
+        }
+
+        if (height-1 >= 0 && width+1 < this.height)          {
+            neighbours.put(5, pixels[height-1][width+1]);
+        }
+        if (height+1 < this.height && width+1 < this.width) {
+            neighbours.put(6, pixels[height+1][width+1]);
+        }
+        if (height-1 >= 0 && width-1 >= 0)                  {
+            neighbours.put(7, pixels[height-1][width-1]);
+        }
+
+        if (height+1 < this.height && width-1 >= 0)         {
+            neighbours.put(8, pixels[height+1][width-1]);
         }
 
         return neighbours;
@@ -87,15 +89,16 @@ public class ImgSegmentationIO {
     }
 
     public void save (String pathname, Individual ind, String color, boolean checker) {
-        if (color != "green" && color != "black") {throw new IllegalArgumentException("Color is not black or green.");}
+        if (color != "g" && color != "b") {throw new IllegalArgumentException("Color is not black or green.");}
         int segColor;
+        int segSize = ind.getSegments().size();
         String folder;
         String sumOfSeg;
         String suffix;
         String path;
         String txtSuffix;
 
-        if(color == "black"){
+        if(color == "b"){
             segColor = RGB.black.findRGBInt();
             folder = "";
             suffix = "black";
@@ -106,11 +109,9 @@ public class ImgSegmentationIO {
         }
         sumOfSeg = ind.getNumberOfSeg() + "_" + ind.getConnectivity() + "_" + ind.getDev() + "_" + ind.getEdgeValue();
         if(checker){
-            path = "project3_IT3708_MOEA/evaluator/Student_Segmentation_Files" + folder + "/" + pathname + "/" +
-                    suffix + debugImageCount++ + ".jpg";
+            path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/" + debugImageCount++ + ".jpg";
         }else{
-            path = "project3_IT3708_MOEA/evaluator/Student_Segmentation_Files" + folder + "/" + pathname + "/" +
-                    suffix + sumOfSeg + ".jpg";
+            path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + segSize + ".jpg";
         }
 
         System.out.println("Saving file for path:  " + path);
@@ -122,9 +123,9 @@ public class ImgSegmentationIO {
             for (int i = 0; i < getHeight(); i++) {
                 for (int j = 0; j < getWidth(); j++) {
                     if (ind.edgeChecker(pixels[i][j])) {
-                        img.setRGB(i, j, segColor);
+                        img.setRGB(j, i, segColor);
                     } else {
-                        img.setRGB(i, j, fetchBackground(pixels[i][j], color));
+                        img.setRGB(j, i, fetchBackground(pixels[i][j], color));
                     }
                 }
             }

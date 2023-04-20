@@ -12,13 +12,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class main {
 
-    private String file = Settings.file;
     //private boolean
     public static ThreadPoolExecutor exe = (ThreadPoolExecutor)Executors.newFixedThreadPool(Settings.threadSize);
     public static void main(String[] args) {
         String file = Settings.file;
+        String path = Settings.path;
         boolean runNSGA = Settings.runNSGA;
         boolean segmentMerge = Settings.segmentMerge;
+        int popSize = Settings.popSize;
 
         List<Individual> bestIndividuals = new ArrayList<>();
         ImgSegmentationIO imgSegmentationIO = new ImgSegmentationIO(file);
@@ -33,10 +34,10 @@ public class main {
             bestIndividuals = geneticAlgorithm.getPop();
             //Usikker om denne funker
             bestIndividuals.sort(Comparator.comparingDouble(p -> p.getFitnessWithWeights()));
-            bestIndividuals.subList(0,4);
+            bestIndividuals = bestIndividuals.subList(0,popSize-1);
         }
-        Path bPath = Path.of("path/" + file);
-        Path gPath = Path.of("path/" + file);
+        Path bPath = Path.of(path);
+        Path gPath = Path.of(path);
         for(Individual ind : bestIndividuals){
             exe.execute(()-> {
                 if(segmentMerge){
