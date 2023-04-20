@@ -33,6 +33,7 @@ public class Individual {
         this.genotype = new ArrayList<>();
 
         //mulignes kjøre variant for overflødige segments
+        primsMST();
         makeSegments();
     }
 

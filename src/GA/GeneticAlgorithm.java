@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class GeneticAlgorithm {
 
+    private static Random rand = new Random();
     private List<List<Individual>> popRanked;
     private List<Individual> pop;
     private Pixel[][] pixels;
@@ -119,6 +120,7 @@ public class GeneticAlgorithm {
             differenceInCriteria = paretoFront.get(i+1).getSegCriteriaValue(criteria);
             differenceInCriteria -= paretoFront.get(i-1).getSegCriteriaValue(criteria);
             differenceInCriteria /= minMaxCriteriaDiffInSeg;
+
             paretoFront.get(i).setCrowdingDist(paretoFront.get(i).getCrowdingDist() + differenceInCriteria);
         }
     }
@@ -186,11 +188,15 @@ public class GeneticAlgorithm {
         notDomList.add(pop.get(0)); // First member in pop
         Set<Individual> dominatedSet = new HashSet<>();
         for (Individual ind : pop) {
-            if (dominatedSet.contains(ind)) {}
+            if (dominatedSet.contains(ind)) {
+                continue;
+            }
             notDomList.add(ind);
                 for (Individual notDominatedInd : notDomList) {
-                    if (dominatedSet.contains(ind) || notDominatedInd == ind) {
-                    } else if (ind.dominates(notDominatedInd)) {
+                    //if (dominatedSet.contains(ind) || notDominatedInd == ind) {
+                    //    continue;
+                    //} else
+                    if (ind.dominates(notDominatedInd)) {
                     dominatedSet.add(notDominatedInd);
                     } else if (notDominatedInd.dominates(ind)) { // Kan nok endre rekkefølgen på not her når ting funker.
                         dominatedSet.add(ind);
@@ -234,7 +240,8 @@ public class GeneticAlgorithm {
         List<Gene> g2 = p2.getGenotype();
         if (Utils.randomDouble() < Settings.crossoverProb) {
             int length = g1.size();
-            int indexPoint = Utils.randomInt(length);
+            // int indexPoint = Utils.randomInt(length);
+            int indexPoint = ThreadLocalRandom.current().nextInt(1, length);
             List<Gene> temporary = new ArrayList<>(g1.subList(indexPoint, length)); // Kan flytte i en hjelpemetode
             g1.subList(indexPoint, length).clear(); // clear??
             g1.addAll(g2.subList(indexPoint, length));

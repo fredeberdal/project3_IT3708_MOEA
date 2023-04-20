@@ -13,6 +13,7 @@ public class Segment {
 
     public Segment(Set <Pixel> pixels){
         this.pixels = pixels;
+        setCentroid(locateCentroid());
         this.dev = Fitness.deviation(this);
         this.connectivity = Fitness.segConnectivity(this);
         this.edgeValue = Fitness.calculateEdgeValue(this);
