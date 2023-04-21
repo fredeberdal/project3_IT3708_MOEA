@@ -20,12 +20,7 @@ public class Segment {
     }
 
     public boolean hasPixel(Pixel p){
-        if(p != null){
-            if (pixels.contains(pixels)) {
-                return true;
-            }
-        }
-        return false;
+        return p != null && pixels.contains(p);
     }
 
     public RGB getCentroid() {

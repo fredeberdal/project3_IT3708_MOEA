@@ -52,13 +52,13 @@ public class Individual {
                 continue;
             }
             seg = new HashSet<>();
-            Tuple<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, xLength);
+            Tuple<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, this.xLength);
 
             currentPixel = this.pixels[indexPixel.r][indexPixel.l];
             seg.add(currentPixel);
 
             nodesVisited[j] = true;
-            currentPixel = currentPixel.directionalNeighbour(genotype.get(j));
+            currentPixel = currentPixel.directionalNeighbour(this.genotype.get(j));
             index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
             while(nodesVisited[index] == false){
                 seg.add(currentPixel);
@@ -75,7 +75,7 @@ public class Individual {
                         break;
                     }
                 }
-                if(notCurrent == true){
+                if(notCurrent == false){
                     temporarySegments.add(new Segment(seg));
                 }
             }else{
@@ -87,7 +87,7 @@ public class Individual {
         this.edgeValue = Fitness.allEdgeValue(this);
         this.connectivity = Fitness.allConnectivity(this);
         this.dev = Fitness.allDeviation(this);
-
+        System.out.println("Amount of seg " + numberOfSeg);
     }
 
     public void primsMST(){
@@ -184,7 +184,7 @@ public class Individual {
     public void segmentMergeSmallRecursive(int counter){
         List<Segment> allowedSegments = new ArrayList<>();
         for(Segment seg : this.segments){
-            if(Settings.allowedSegmentSize < seg.getPixels().size()){
+            if(Settings.allowedSegmentSize > seg.getPixels().size()){
                 allowedSegments.add(seg);
             }
         }
