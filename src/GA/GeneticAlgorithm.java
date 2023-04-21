@@ -141,8 +141,6 @@ public class GeneticAlgorithm {
         while (!temporaryEx.isTerminated())  {
             // Sync up ?? Vi mø prøve uten disse
         }
-        System.out.println("Antall segmenter: " + newPop.get(0).getSegments().size());
-        System.out.println("Antall pop: " + newPop.size());
         System.out.println("Finished making pop");
         this.pop = newPop;
     }

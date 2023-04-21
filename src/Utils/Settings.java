@@ -4,11 +4,11 @@ public class Settings {
     public static final boolean useNSGA = true;
 
     public static final int allowedSegmentSize = 50;
-    public static final int triedMerges = 10;
+    public static final int triedMerges = 30;
     public static final boolean bestSegment = true;
     public static final int threadSize = 5;
-    public static final int genSpan = 10;
-    public static final int popSize = 30;
+    public static final int genSpan = 20;
+    public static final int popSize = 40;
     public static final int amountOfSegments = 30;
     public static final int parentSize = 15;
     public static final double mutationProb = 0.3;

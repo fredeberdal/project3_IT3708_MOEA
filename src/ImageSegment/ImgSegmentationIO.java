@@ -112,8 +112,6 @@ public class ImgSegmentationIO {
         }
 
         System.out.println("Saving file for path:  " + path);
-        int counterx = 0;
-        int countery = 0;
         try {
             File file = new File(path);
             BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -127,18 +125,14 @@ public class ImgSegmentationIO {
                 }
             }
             for (int i = 0; i < getWidth(); i++) {
-                counterx++;
                 img.setRGB(i, 0, segColor);
                 img.setRGB(i, this.getHeight() - 1, segColor);
             }
             for (int i = 0; i < getHeight(); i++) {
-                countery++;
                 img.setRGB(0, i, segColor);
                 img.setRGB(this.getWidth() - 1, i, segColor);
             }
              ImageIO.write(img, "jpg", file);
-            System.out.println("CounterX : " + counterx);
-            System.out.println("CounterY : " + countery);
             } catch (IOException exception) {
             System.out.println(exception);
         }
