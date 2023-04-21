@@ -21,7 +21,7 @@ public class Segment {
 
     public boolean hasPixel(Pixel p){
         if(p != null){
-            if (pixels.contains(pixels)) {
+            if (pixels.contains(p)) {
                 return true;
             }
         }

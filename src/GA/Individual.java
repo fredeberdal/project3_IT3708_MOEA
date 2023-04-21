@@ -75,7 +75,7 @@ public class Individual {
                         break;
                     }
                 }
-                if(notCurrent == true){
+                if(notCurrent == false){
                     temporarySegments.add(new Segment(seg));
                 }
             }else{
@@ -148,12 +148,12 @@ public class Individual {
         }
     }
     public Edge topSegmentEdge(Segment seg){
-        double lowestDistance = 1000000;
+        double lowestDistance = Integer.MAX_VALUE;
         Edge topEdge = null;
 
         for(Pixel p : seg.getPixels()){
             for(Pixel neighbour : p.directionalNeighbours().values()){
-                if(seg.hasPixel(neighbour) == true){
+                if(seg.hasPixel(neighbour) == false){
                     Edge temporaryEdge = new Edge(p, neighbour);
                     if(temporaryEdge.distance < lowestDistance){
                         topEdge = temporaryEdge;
@@ -184,14 +184,14 @@ public class Individual {
     public void segmentMergeSmallRecursive(int counter){
         List<Segment> allowedSegments = new ArrayList<>();
         for(Segment seg : this.segments){
-            if(Settings.allowedSegmentSize < seg.getPixels().size()){
+            if(Settings.allowedSegmentSize > seg.getPixels().size()){
                 allowedSegments.add(seg);
             }
         }
         if(this.previous == allowedSegments.size()){
             counter++;
         }
-        if(Settings.allowedSegmentSize < counter || allowedSegments.size() == 0){
+        if(Settings.triedMerges < counter || allowedSegments.size() == 0){
             return;
         }
         for(Segment seg : allowedSegments){

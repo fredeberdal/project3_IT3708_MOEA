@@ -109,15 +109,16 @@ public class GeneticAlgorithm {
 
     private void assignCrowdingDistToInd(List<Individual> paretoFront, SegmentCriteria criteria) { // Endre param navn
         paretoFront.sort(SegmentCriteria.individualComparator(criteria));
-        Individual maxInd = paretoFront.get(0);
-        Individual minInd = paretoFront.get(paretoFront.size());
+        Individual maxInd = paretoFront.get(paretoFront.size()-1);
+        Individual minInd = paretoFront.get(0);
         maxInd.setCrowdingDist(Integer.MAX_VALUE);
         minInd.setCrowdingDist(Integer.MAX_VALUE);
 
         double minMaxCriteriaDiffInSeg = maxInd.getSegCriteriaValue(criteria);
         minMaxCriteriaDiffInSeg -= minInd.getSegCriteriaValue(criteria);
+
         double differenceInCriteria;
-        for (int i = 1; i < paretoFront.size(); i++) {
+        for (int i = 1; i < paretoFront.size()-1; i++) {
             differenceInCriteria = paretoFront.get(i+1).getSegCriteriaValue(criteria);
             differenceInCriteria -= paretoFront.get(i-1).getSegCriteriaValue(criteria);
             differenceInCriteria /= minMaxCriteriaDiffInSeg;
