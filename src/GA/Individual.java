@@ -148,12 +148,12 @@ public class Individual {
         }
     }
     public Edge topSegmentEdge(Segment seg){
-        double lowestDistance = 1000000;
+        double lowestDistance = Integer.MAX_VALUE;
         Edge topEdge = null;
 
         for(Pixel p : seg.getPixels()){
             for(Pixel neighbour : p.directionalNeighbours().values()){
-                if(seg.hasPixel(neighbour) == true){
+                if(seg.hasPixel(neighbour) == false){
                     Edge temporaryEdge = new Edge(p, neighbour);
                     if(temporaryEdge.distance < lowestDistance){
                         topEdge = temporaryEdge;
@@ -191,7 +191,7 @@ public class Individual {
         if(this.previous == allowedSegments.size()){
             counter++;
         }
-        if(Settings.allowedSegmentSize < counter || allowedSegments.size() == 0){
+        if(Settings.triedMerges < counter || allowedSegments.size() == 0){
             return;
         }
         for(Segment seg : allowedSegments){

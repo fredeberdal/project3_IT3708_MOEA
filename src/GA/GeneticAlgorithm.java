@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class GeneticAlgorithm {
 
+    private static Random rand = new Random();
     private List<List<Individual>> popRanked;
     private List<Individual> pop;
     private Pixel[][] pixels;
@@ -108,18 +109,20 @@ public class GeneticAlgorithm {
 
     private void assignCrowdingDistToInd(List<Individual> paretoFront, SegmentCriteria criteria) { // Endre param navn
         paretoFront.sort(SegmentCriteria.individualComparator(criteria));
-        Individual maxInd = paretoFront.get(0);
-        Individual minInd = paretoFront.get(paretoFront.size());
+        Individual maxInd = paretoFront.get(paretoFront.size()-1);
+        Individual minInd = paretoFront.get(0);
         maxInd.setCrowdingDist(Integer.MAX_VALUE);
         minInd.setCrowdingDist(Integer.MAX_VALUE);
 
         double minMaxCriteriaDiffInSeg = maxInd.getSegCriteriaValue(criteria);
         minMaxCriteriaDiffInSeg -= minInd.getSegCriteriaValue(criteria);
+
         double differenceInCriteria;
-        for (int i = 1; i < paretoFront.size(); i++) {
+        for (int i = 1; i < paretoFront.size()-1; i++) {
             differenceInCriteria = paretoFront.get(i+1).getSegCriteriaValue(criteria);
             differenceInCriteria -= paretoFront.get(i-1).getSegCriteriaValue(criteria);
             differenceInCriteria /= minMaxCriteriaDiffInSeg;
+
             paretoFront.get(i).setCrowdingDist(paretoFront.get(i).getCrowdingDist() + differenceInCriteria);
         }
     }
@@ -189,11 +192,15 @@ public class GeneticAlgorithm {
         notDomList.add(pop.get(0)); // First member in pop
         Set<Individual> dominatedSet = new HashSet<>();
         for (Individual ind : pop) {
-            if (dominatedSet.contains(ind)) {}
+            if (dominatedSet.contains(ind)) {
+                continue;
+            }
             notDomList.add(ind);
                 for (Individual notDominatedInd : notDomList) {
-                    if (dominatedSet.contains(ind) || notDominatedInd == ind) {
-                    } else if (ind.dominates(notDominatedInd)) {
+                    //if (dominatedSet.contains(ind) || notDominatedInd == ind) {
+                    //    continue;
+                    //} else
+                    if (ind.dominates(notDominatedInd)) {
                     dominatedSet.add(notDominatedInd);
                     } else if (notDominatedInd.dominates(ind)) { // Kan nok endre rekkefølgen på not her når ting funker.
                         dominatedSet.add(ind);
@@ -238,6 +245,7 @@ public class GeneticAlgorithm {
 
         if (Utils.randomDouble() < Settings.crossoverProb) {
             int length = g1.size();
+
             //int indexPoint = Utils.randomInt(length);
             System.out.println(length);
             System.out.println("Inne i crossover");

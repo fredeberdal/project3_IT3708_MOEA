@@ -26,13 +26,12 @@ public class ImgSegmentationIO {
     public Pixel[][] getPixels() { return this.pixels; }
 
     public ImgSegmentationIO(String file) {
-        try {
-            InputStream input = new FileInputStream("training_images/" + file + "/Test image.jpg");
-
+        try (InputStream input = new FileInputStream("training_images/" + file + "/Test image.jpg")) {
             BufferedImage img = ImageIO.read(input);
             this.height = img.getHeight();
             this.width = img.getWidth();
             this.pixels = new Pixel[img.getHeight()][img.getWidth()];
+
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
                     Color color = new Color(img.getRGB(j, i));
@@ -63,21 +62,19 @@ public class ImgSegmentationIO {
         if (height-1 >= 0) {
             neighbours.put(3, pixels[height-1][width]);
         }
-        if (height+1 < this.height)                     {
+        if (height+1 < this.height) {
             neighbours.put(4, pixels[height+1][width]);
         }
-
-        if (height-1 >= 0 && width+1 < this.height)          {
+        if (height-1 >= 0 && width+1 < this.height) {
             neighbours.put(5, pixels[height-1][width+1]);
         }
         if (height+1 < this.height && width+1 < this.width) {
             neighbours.put(6, pixels[height+1][width+1]);
         }
-        if (height-1 >= 0 && width-1 >= 0)                  {
+        if (height-1 >= 0 && width-1 >= 0) {
             neighbours.put(7, pixels[height-1][width-1]);
         }
-
-        if (height+1 < this.height && width-1 >= 0)         {
+        if (height+1 < this.height && width-1 >= 0) {
             neighbours.put(8, pixels[height+1][width-1]);
         }
 

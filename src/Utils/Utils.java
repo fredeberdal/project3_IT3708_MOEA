@@ -13,7 +13,7 @@ public class Utils {
     }
 
     public static int toIndexGenotype(int width, int height, int widthLength){
-        return height*widthLength + width;
+        return (height*widthLength) + width;
     }
 
     public static double randomDouble(){
