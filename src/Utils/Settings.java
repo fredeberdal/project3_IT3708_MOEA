@@ -1,8 +1,8 @@
 package Utils;
 
 public class Settings {
-    public static final boolean useNSGA = false;
-    public static final int allowedSegmentSize = 50;
+    public static final boolean useNSGA = true;
+    public static final int allowedSegmentSize = 25;
     public static final int triedMerges = 10;
     public static final boolean bestSegment = true;
     public static final int threadSize = 5;
@@ -14,7 +14,7 @@ public class Settings {
     public static final double tournamentProb = 0.8;
     public static final double crossoverProb = 0.8;
 
-    public static final String file = "86016" ;
+    public static final String file = "86016" ; //
     public static final String path = "training_images/" + file + "/Test image.jpg";
     public static final String pathGreen = "training_images/" + file + "/Test image.jpg";
 

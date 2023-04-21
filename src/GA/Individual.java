@@ -18,13 +18,14 @@ public class Individual {
     private int previous = 0;
     public double edgeValue, connectivity, dev, crowdingDist;
 
-    public Individual(List<Gene> genotype, Pixel [][] pixels) {
+    public Individual(List<Gene> genotype, Pixel[][] pixels) {
         this.genotype = genotype;
         this.pixels = pixels;
         this.yLength = pixels.length;
         this.xLength = pixels[0].length;
         makeSegments();
     }
+
     public Individual(Pixel[][] pixels, int numberOfSeg) {
         this.pixels = pixels;
         this.numberOfSeg = numberOfSeg;
@@ -37,18 +38,18 @@ public class Individual {
         makeSegments();
     }
 
-    public void makeSegments(){
+    public void makeSegments() {
         Pixel currentPixel;
         int size = genotype.size();
         int index;
         List<Segment> temporarySegments = new ArrayList<>();
-        boolean [] nodesVisited = new boolean[size];
-        for(int i = 0; i < nodesVisited.length; i++){
+        boolean[] nodesVisited = new boolean[size];
+        for (int i = 0; i < nodesVisited.length; i++) {
             nodesVisited[i] = false;
         }
         Set<Pixel> seg;
-        for(int j = 0; j < size; j++){
-            if(nodesVisited[j]) {
+        for (int j = 0; j < size; j++) {
+            if (nodesVisited[j]) {
                 continue;
             }
             seg = new HashSet<>();
@@ -60,25 +61,25 @@ public class Individual {
             nodesVisited[j] = true;
             currentPixel = currentPixel.directionalNeighbour(this.genotype.get(j));
             index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
-            while(nodesVisited[index] == false){
+            while (nodesVisited[index] == false) {
                 seg.add(currentPixel);
                 currentPixel = currentPixel.directionalNeighbour(genotype.get(index));
                 nodesVisited[index] = true;
                 index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
             }
-            if(this.pixels[indexPixel.r][indexPixel.l] != currentPixel){
+            if (this.pixels[indexPixel.r][indexPixel.l] != currentPixel) {
                 boolean notCurrent = false;
-                for(Segment s : temporarySegments){
-                    if(s.hasPixel(currentPixel)){
+                for (Segment s : temporarySegments) {
+                    if (s.hasPixel(currentPixel)) {
                         s.addAllPixels(seg);
                         notCurrent = true;
                         break;
                     }
                 }
-                if(notCurrent == false){
+                if (notCurrent == false) {
                     temporarySegments.add(new Segment(seg));
                 }
-            }else{
+            } else {
                 temporarySegments.add(new Segment(seg));
             }
         }
@@ -90,12 +91,12 @@ public class Individual {
         System.out.println("Amount of seg " + numberOfSeg);
     }
 
-    public void primsMST(){
+    public void primsMST() {
         int sumOfNodes = xLength * yLength;
         int randomX = ThreadLocalRandom.current().nextInt(xLength);
         int randomY = ThreadLocalRandom.current().nextInt(yLength);
 
-        for(int i = 0; i<sumOfNodes; i++){
+        for (int i = 0; i < sumOfNodes; i++) {
             this.genotype.add(Gene.NONE);
         }
         Set<Pixel> nodesVisited = new HashSet<>();
@@ -103,13 +104,13 @@ public class Individual {
         Pixel curr = this.pixels[randomY][randomX];
 
         PriorityQueue<Edge> queue = new PriorityQueue<>();
-        while(sumOfNodes>nodesVisited.size()){
-            if(nodesVisited.contains(curr) == false){
+        while (sumOfNodes > nodesVisited.size()) {
+            if (nodesVisited.contains(curr) == false) {
                 nodesVisited.add(curr);
                 queue.addAll(this.makeEdges(curr));
             }
             Edge edge = queue.poll();
-            if(!nodesVisited.contains(edge.to)){
+            if (!nodesVisited.contains(edge.to)) {
                 changeGenotype(edge);
                 edges.add(edge);
             }
@@ -117,45 +118,47 @@ public class Individual {
         }
 
         Collections.sort(edges);
-        for(int j = 0; j < numberOfSeg; j++){
+        for (int j = 0; j < numberOfSeg; j++) {
             Edge edgeRemoved = edges.get(j);
             changeGenotype(edgeRemoved);
         }
     }
-    public List<Edge> makeEdges(Pixel p){
+
+    public List<Edge> makeEdges(Pixel p) {
         List<Edge> edges = new ArrayList<>();
         //usikker på objects::nonull
-        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(n -> n!=null).map(n -> new Edge(p, n)).collect(Collectors.toList());
+        edges = Gene.geneDirections().stream().map(p::directionalNeighbour).filter(n -> n != null).map(n -> new Edge(p, n)).collect(Collectors.toList());
         return edges;
     }
 
-    public void segmentMergeMutation(){
+    public void segmentMergeMutation() {
         List<Segment> allowedSegments = segments.stream().filter(seg -> seg.getPixels().size() < Settings.allowedSegmentSize).toList();
-        if(allowedSegments.size() != 0){
+        if (allowedSegments.size() != 0) {
             int random = ThreadLocalRandom.current().nextInt(allowedSegments.size());
             Segment randomSegment = allowedSegments.get(random);
             Edge e = null;
-            if(Settings.bestSegment){
+            if (Settings.bestSegment) {
                 e = topSegmentEdge(randomSegment);
-            }else{
+            } else {
                 e = randomSegmentEdge(randomSegment);
             }
-            if(e != null){
+            if (e != null) {
                 changeGenotype(e);
                 makeSegments();
             }
 
         }
     }
-    public Edge topSegmentEdge(Segment seg){
+
+    public Edge topSegmentEdge(Segment seg) {
         double lowestDistance = Integer.MAX_VALUE;
         Edge topEdge = null;
 
-        for(Pixel p : seg.getPixels()){
-            for(Pixel neighbour : p.directionalNeighbours().values()){
-                if(seg.hasPixel(neighbour) == false){
+        for (Pixel p : seg.getPixels()) {
+            for (Pixel neighbour : p.directionalNeighbours().values()) {
+                if (seg.hasPixel(neighbour) == false) {
                     Edge temporaryEdge = new Edge(p, neighbour);
-                    if(temporaryEdge.distance < lowestDistance){
+                    if (temporaryEdge.distance < lowestDistance) {
                         topEdge = temporaryEdge;
                         lowestDistance = temporaryEdge.distance;
                     }
@@ -165,38 +168,38 @@ public class Individual {
         return topEdge;
     }
 
-    public Edge randomSegmentEdge(Segment seg){
+    public Edge randomSegmentEdge(Segment seg) {
         List<Edge> potentialEdges = new ArrayList<>();
-        for(Pixel p: seg.getPixels()){
-            for(Pixel neighbour: p.directionalNeighbours().values()){
-                if(seg.hasPixel(neighbour) == true){
+        for (Pixel p : seg.getPixels()) {
+            for (Pixel neighbour : p.directionalNeighbours().values()) {
+                if (seg.hasPixel(neighbour) == true) {
                     potentialEdges.add(new Edge(p, neighbour));
                 }
             }
         }
-        if(potentialEdges.size() != 0){
+        if (potentialEdges.size() != 0) {
             int randomIndex = ThreadLocalRandom.current().nextInt(0, potentialEdges.size());
             return potentialEdges.get(randomIndex);
         }
         return null;
     }
 
-    public void segmentMergeSmallRecursive(int counter){
+    public void segmentMergeSmallRecursive(int counter) {
         List<Segment> allowedSegments = new ArrayList<>();
-        for(Segment seg : this.segments){
-            if(Settings.allowedSegmentSize > seg.getPixels().size()){
+        for (Segment seg : this.segments) {
+            if (Settings.allowedSegmentSize > seg.getPixels().size()) {
                 allowedSegments.add(seg);
             }
         }
-        if(this.previous == allowedSegments.size()){
+        if (this.previous == allowedSegments.size()) {
             counter++;
         }
-        if(Settings.triedMerges < counter || allowedSegments.size() == 0){
+        if (Settings.triedMerges < counter || allowedSegments.size() == 0) {
             return;
         }
-        for(Segment seg : allowedSegments){
+        for (Segment seg : allowedSegments) {
             Edge e = topSegmentEdge(seg);
-            if(e != null){
+            if (e != null) {
                 changeGenotype(e);
             }
         }
@@ -204,20 +207,29 @@ public class Individual {
         this.makeSegments();
         segmentMergeSmallRecursive(counter);
     }
-    public void changeGenotype(Edge e){
+
+    public void changeGenotype(Edge e) {
         Pixel from = e.from;
         Pixel to = e.to;
-        if(from.equals(to)){
+        if (from.equals(to)) {
             this.genotype.set(Utils.toIndexGenotype(from.width, from.height, xLength), Gene.NONE);
             return;
         }
-        this.genotype.set(Utils.toIndexGenotype(to.width, to.height, xLength), Gene.fromVector(from.width-to.width, from.height-to.height));
+        this.genotype.set(Utils.toIndexGenotype(to.width, to.height, xLength), Gene.fromVector(from.width - to.width, from.height - to.height));
 
     }
 
-    public boolean edgeChecker(Pixel p){
-        boolean isEdge = false;
-        Segment segPixel = segments.stream().findAny().orElse(segments.get(0));
+    public boolean edgeChecker(Pixel p) {
+        boolean isEdge;
+        Segment segPixel = null;
+        for (Segment segment : segments) {
+            if (segment.hasPixel(p)) {
+                segPixel = segment;
+            }
+        }
+        if (segPixel == null) {
+            segPixel = segments.get(0);
+        }
         isEdge = !segPixel.hasPixel(p.directionalNeighbour(Gene.DOWN)) || !segPixel.hasPixel(p.directionalNeighbour(Gene.LEFT));
         return isEdge;
     }
@@ -232,9 +244,10 @@ public class Individual {
         return temp;
     }
 
-    public boolean dominates (Individual ind) {
+    public boolean dominates(Individual ind) {
         return this.connectivity < ind.connectivity && this.edgeValue < ind.edgeValue && this.dev < ind.dev;
     }
+
     public double getSegCriteriaValue(SegmentCriteria criteria) { // mulig å sløyfe på noen måte?
         if (criteria == CONNECTIVITY) {
             return connectivity;
@@ -245,7 +258,7 @@ public class Individual {
         }
     }
 
-    public List<Segment> getSegments(){
+    public List<Segment> getSegments() {
         return this.segments;
     }
 
