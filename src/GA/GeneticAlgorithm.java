@@ -197,10 +197,9 @@ public class GeneticAlgorithm {
             }
             notDomList.add(ind);
                 for (Individual notDominatedInd : notDomList) {
-                    //if (dominatedSet.contains(ind) || notDominatedInd == ind) {
-                    //    continue;
-                    //} else
-                    if (ind.dominates(notDominatedInd)) {
+                    if (dominatedSet.contains(ind) || notDominatedInd == ind) {
+                        continue; // kommenter ut?
+                    } else if (ind.dominates(notDominatedInd)) {
                     dominatedSet.add(notDominatedInd);
                     } else if (notDominatedInd.dominates(ind)) { // Kan nok endre rekkefølgen på not her når ting funker.
                         dominatedSet.add(ind);
@@ -222,13 +221,13 @@ public class GeneticAlgorithm {
                 if (Settings.useNSGA) {
                     if (p1.getCrowdingDist() < p2.getCrowdingDist()) {
                         chosen.add(p2);
-                    } else { // else if
+                    } else if (p2.getCrowdingDist() < p1.getCrowdingDist()){
                         chosen.add(p1);
                     }
                 } else if (p2.strictlyBetterFit(p1)) {
                     chosen.add(p2);
                 } else if (p1.strictlyBetterFit(p2)) {
-                    chosen.add(p2);
+                    chosen.add(p1);
                 } else {
                     chosen.add(Utils.selectRandom(p1, p2));
                 }
@@ -247,8 +246,6 @@ public class GeneticAlgorithm {
             int length = g1.size();
 
             //int indexPoint = Utils.randomInt(length);
-            System.out.println(length);
-            System.out.println("Inne i crossover");
             int indexPoint = ThreadLocalRandom.current().nextInt(1,length);
             List<Gene> p1Segment1 = new ArrayList<>(g1.subList(0, indexPoint));
             List<Gene> p1Segment2 = new ArrayList<>(g1.subList(indexPoint, length));
@@ -265,8 +262,6 @@ public class GeneticAlgorithm {
         }
         g1 = mutateGeneRandomly(g1);
         g2 = mutateGeneRandomly(g2);
-        System.out.println(g1.size());
-        System.out.println(g2.size());
         return new Tuple<>(new Individual(g1, this.pixels), new Individual(g2, this.pixels));
     }
 

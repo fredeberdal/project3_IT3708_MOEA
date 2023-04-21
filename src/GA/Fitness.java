@@ -24,7 +24,9 @@ public class Fitness {
         double con = 0;
         for(Pixel p : seg.getPixels()){
             for(Pixel n : p.getNeighbours().values()){
-                if(!seg.hasPixel(n)){
+                if(seg.hasPixel(n)){
+                    con += 0;
+                } else {
                     con += 0.125;
                 }
             }
@@ -37,12 +39,14 @@ public class Fitness {
         for (Pixel p : seg.getPixels()){
             Collection<Pixel> n = p.getNeighbours().values();
             for(Pixel neigh : n){
-                if(!seg.hasPixel(neigh)){
+                if(seg.hasPixel(neigh)){
+                    eV += 0;
+                } else {
                     eV += distance(p.color, neigh.color);
                 }
             }
         }
-        return  -eV;
+        return -eV;
     }
     public static double allEdgeValue(Individual ind){
         return ind.getSegments().stream().map(segment -> segment.edgeValue).reduce(0.0, (sum, el) -> sum+el);
