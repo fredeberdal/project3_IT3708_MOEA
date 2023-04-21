@@ -109,7 +109,7 @@ public class Individual {
                 queue.addAll(this.makeEdges(curr));
             }
             Edge edge = queue.poll();
-            if(nodesVisited.contains(edge.to)){
+            if(!nodesVisited.contains(edge.to)){
                 changeGenotype(edge);
                 edges.add(edge);
             }
@@ -125,7 +125,7 @@ public class Individual {
     public List<Edge> makeEdges(Pixel p){
         List<Edge> edges = new ArrayList<>();
         //usikker på objects::nonull
-        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).toList();
+        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(n -> n!=null).map(n -> new Edge(p, n)).collect(Collectors.toList());
         return edges;
     }
 
