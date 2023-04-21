@@ -110,7 +110,8 @@ public class Individual {
                 queue.addAll(this.makeEdges(curr));
             }
             Edge edge = queue.poll();
-            if(nodesVisited.contains(edge.to) == false){
+
+            if(!nodesVisited.contains(edge.to)){
                 changeGenotype(edge);
                 edges.add(edge);
             }

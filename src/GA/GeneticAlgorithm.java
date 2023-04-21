@@ -133,7 +133,7 @@ public class GeneticAlgorithm {
         ThreadPoolExecutor temporaryEx = (ThreadPoolExecutor) Executors.newFixedThreadPool(Settings.threadSize); // ?? må ha?
         for (int i = 0; i < Settings.popSize / 2; i++) {
             temporaryEx.execute(() -> { // Denne burde endres
-                Individual ind = new Individual(this.pixels, Utils.randomInt(30)); // en annen rand
+                Individual ind = new Individual(this.pixels, Utils.randomInt(Settings.amountOfSegments)); // en annen rand
                 newPop.add(ind);
             });
         }

@@ -2,12 +2,13 @@ package Utils;
 
 public class Settings {
     public static final boolean useNSGA = false;
-    public static final int allowedSegmentSize = 200;
+    public static final int allowedSegmentSize = 50;
     public static final int triedMerges = 10;
     public static final boolean bestSegment = true;
     public static final int threadSize = 5;
     public static final int genSpan = 10;
     public static final int popSize = 20;
+    public static final int amountOfSegments = 20;
     public static final int parentSize = 15;
     public static final double mutationProb = 0.3;
     public static final double tournamentProb = 0.8;

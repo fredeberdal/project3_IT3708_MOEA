@@ -116,9 +116,8 @@ public class ImgSegmentationIO {
         try {
             File file = new File(path);
             BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-
-            for (int i = 0; i < getHeight(); i++) {
-                for (int j = 0; j < getWidth(); j++) {
+            for (int i = 0; i < this.getHeight(); i++) {
+                for (int j = 0; j < this.getWidth(); j++) {
                     if (ind.edgeChecker(pixels[i][j])) {
                         img.setRGB(j, i, segColor);
                     } else {
@@ -141,7 +140,7 @@ public class ImgSegmentationIO {
     }
 
     private int fetchBackground(Pixel pixel, String color) {
-        if(color == "black"){return RGB.white.findRGBInt();
+        if(color == "b"){return RGB.white.findRGBInt();
 
         }else {return pixel.color.findRGBInt();}
     }
