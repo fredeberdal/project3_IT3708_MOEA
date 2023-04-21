@@ -35,11 +35,5 @@ public enum Gene {
         return Arrays.asList(RIGHT, LEFT, UP, DOWN); // Må kanskje endres for å lage en: new Gene[]
     }
 
-    /*
-    Blir ikke brukt
-        public static Gene random() {
-        return values()[Utils.randomInt(values().length)];
-    }
-     */
 
 }

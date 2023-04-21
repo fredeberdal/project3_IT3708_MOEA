@@ -7,13 +7,13 @@ public class Settings {
     public static final boolean bestSegment = true;
     public static final int threadSize = 5;
     public static final int genSpan = 10;
-    public static final int popSize = 2;
+    public static final int popSize = 20;
     public static final int parentSize = 15;
     public static final double mutationProb = 0.3;
     public static final double tournamentProb = 0.8;
     public static final double crossoverProb = 0.8;
 
-    public static final String file = "86016" ;
+    public static final String file = "118035";
     public static final String path = "training_images/" + file + "/Test image.jpg";
     public static final String pathGreen = "training_images/" + file + "/Test image.jpg";
 
