@@ -110,12 +110,7 @@ public class Individual {
                 queue.addAll(this.makeEdges(curr));
             }
             Edge edge = queue.poll();
-<<<<<<< HEAD
             if (!nodesVisited.contains(edge.to)) {
-=======
-
-            if(!nodesVisited.contains(edge.to)){
->>>>>>> 67c0a2e1a089f35de6d1eca4a267fb852dfce39b
                 changeGenotype(edge);
                 edges.add(edge);
             }
@@ -132,11 +127,7 @@ public class Individual {
     public List<Edge> makeEdges(Pixel p) {
         List<Edge> edges = new ArrayList<>();
         //usikker på objects::nonull
-<<<<<<< HEAD
         edges = Gene.geneDirections().stream().map(p::directionalNeighbour).filter(n -> n != null).map(n -> new Edge(p, n)).collect(Collectors.toList());
-=======
-        edges = Gene.geneDirections().stream().map(p :: directionalNeighbour).filter(Objects::nonNull).map(n -> new Edge(p, n)).collect(Collectors.toList());
->>>>>>> 67c0a2e1a089f35de6d1eca4a267fb852dfce39b
         return edges;
     }
 
@@ -146,12 +137,8 @@ public class Individual {
             int random = ThreadLocalRandom.current().nextInt(allowedSegments.size());
             Segment randomSegment = allowedSegments.get(random);
             Edge e = null;
-<<<<<<< HEAD
-            if (Settings.bestSegment) {
-=======
             double rand = ThreadLocalRandom.current().nextDouble();
             if(rand < 0.7){ // parametisere?
->>>>>>> 67c0a2e1a089f35de6d1eca4a267fb852dfce39b
                 e = topSegmentEdge(randomSegment);
             } else {
                 e = randomSegmentEdge(randomSegment);
@@ -184,26 +171,15 @@ public class Individual {
 
     public Edge randomSegmentEdge(Segment seg) {
         List<Edge> potentialEdges = new ArrayList<>();
-<<<<<<< HEAD
         for (Pixel p : seg.getPixels()) {
             for (Pixel neighbour : p.directionalNeighbours().values()) {
                 if (seg.hasPixel(neighbour) == true) {
-=======
-        for(Pixel p: seg.getPixels()){
-            for(Pixel neighbour: p.directionalNeighbours().values()){
-                if(seg.hasPixel(neighbour) == false){
->>>>>>> 67c0a2e1a089f35de6d1eca4a267fb852dfce39b
                     potentialEdges.add(new Edge(p, neighbour));
                 }
             }
         }
-<<<<<<< HEAD
-        if (potentialEdges.size() != 0) {
-            int randomIndex = ThreadLocalRandom.current().nextInt(0, potentialEdges.size());
-=======
         if(potentialEdges.size() > 0){
             int randomIndex = ThreadLocalRandom.current().nextInt(potentialEdges.size());
->>>>>>> 67c0a2e1a089f35de6d1eca4a267fb852dfce39b
             return potentialEdges.get(randomIndex);
         }
         return null;
