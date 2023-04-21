@@ -225,12 +225,12 @@ public class Individual {
         return isEdge;
     }
 
-    public boolean strictlyBetterFit(Individual i) {
+    public boolean strictlyBetterFit(Individual ind) {
         boolean temp;
         if (Settings.useNSGA) {
-            temp = this.getRating() < i.getRating();
+            temp = this.getRating() < ind.getRating();
         } else {
-            temp = this.getFitnessWithWeights() < i.getFitnessWithWeights();
+            temp = this.getFitnessWithWeights() < ind.getFitnessWithWeights();
         }
         return temp;
     }
@@ -333,7 +333,7 @@ public class Individual {
     }
 
     public double getFitnessWithWeights() {
-        double sum = this.edgeValue * Settings.edgeValue + this.dev * Settings.dev + this.connectivity * Settings.connectivity;
+        double sum = (this.edgeValue * Settings.edgeValue) + (this.dev * Settings.dev) + (this.connectivity * Settings.connectivity);
         return sum;
     }
 }
