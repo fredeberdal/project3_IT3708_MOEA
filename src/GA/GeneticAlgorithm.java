@@ -64,7 +64,7 @@ public class GeneticAlgorithm {
         }
     }
 
-
+//må endres
     public void runNSGA() {
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         int genCount = 0;
@@ -78,7 +78,9 @@ public class GeneticAlgorithm {
                 executor.execute(() ->{ // Denne burde endres
                     Individual p1 = parents.get(rand.nextInt(parents.size()));
                     Individual p2 = parents.get(rand.nextInt(parents.size()));
+
                     Tuple<Individual, Individual> offspring = crossover(p1, p2);
+
                     newPop.add(offspring.l);
                     newPop.add(offspring.r);
                 });
@@ -86,6 +88,7 @@ public class GeneticAlgorithm {
             while (newPop.size() != Settings.popSize){
                 // Sync up??
             }
+
             for (Individual ind : newPop) {
                 if (ThreadLocalRandom.current().nextDouble() < Settings.mutationProb) {
                     ind.segmentMergeMutation();
@@ -130,10 +133,11 @@ public class GeneticAlgorithm {
     public void makePop(){
         System.out.println("Making a pop");
         List<Individual> newPop = Collections.synchronizedList(new ArrayList<>());
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
         ThreadPoolExecutor temporaryEx = (ThreadPoolExecutor) Executors.newFixedThreadPool(Settings.threadSize); // ?? må ha?
         for (int i = 0; i < Settings.popSize / 2; i++) {
             temporaryEx.execute(() -> { // Denne burde endres
-                Individual ind = new Individual(this.pixels, Utils.randomInt(Settings.amountOfSegments)); // en annen rand
+                Individual ind = new Individual(this.pixels, rand.nextInt(4, Settings.amountOfSegments)); // en annen rand
                 newPop.add(ind);
             });
         }
@@ -172,44 +176,72 @@ public class GeneticAlgorithm {
     }
     private void newPopFromRank() {
         this.pop.clear();
-        for (List<Individual> paretoFront : this.popRanked) { // endre navn på params
-            assignCrowdingDist(paretoFront);
-            if (paretoFront.size() <= Settings.popSize - this.pop.size()) {
-                this.pop.addAll(paretoFront);
+        for (List<Individual> paretoFrontier : this.popRanked) { // endre navn på params
+            assignCrowdingDist(paretoFrontier);
+            if (paretoFrontier.size() <= Settings.popSize - this.pop.size()) {
+                this.pop.addAll(paretoFrontier);
             } else {
-                List<Individual> temp = new ArrayList<>(paretoFront);
-                temp.sort((a,b) -> Double.compare(b.getCrowdingDist(), a.getCrowdingDist()));
+                List<Individual> temp = new ArrayList<>(paretoFrontier);
+                temp.sort((x,y) -> Double.compare(y.getCrowdingDist(), x.getCrowdingDist()));
                 this.pop.addAll(temp.subList(0, Settings.popSize - this.pop.size()));
             }
         }
     }
 
 
-    private List<Individual> dominatingSet(List<Individual> pop) {
-        List<Individual> notDomList = new ArrayList<>();
-        notDomList.add(pop.get(0)); // First member in pop
+    private List<Individual> dominatingSet2(List<Individual> pop) {
         Set<Individual> dominatedSet = new HashSet<>();
+        List<Individual> notChosenList = new ArrayList<>();
+
+        notChosenList.add(pop.get(0)); // First member in pop
         for (Individual ind : pop) {
             if (dominatedSet.contains(ind)) {
                 continue;
             }
-            notDomList.add(ind);
-                for (Individual notDominatedInd : notDomList) {
-                    if (dominatedSet.contains(ind) || notDominatedInd == ind) {
-                        continue; // kommenter ut?
-                    } else if (ind.dominates(notDominatedInd)) {
-                    dominatedSet.add(notDominatedInd);
-                    } else if (notDominatedInd.dominates(ind)) { // Kan nok endre rekkefølgen på not her når ting funker.
+            notChosenList.add(ind);
+                for (Individual notChosenInd : notChosenList) {
+                    if (dominatedSet.contains(ind) || notChosenInd == ind) {
+                        continue;
+                    } else if (ind.dominateChecker(notChosenInd)) {
+                    dominatedSet.add(notChosenInd);
+                    } else if (notChosenInd.dominateChecker(ind)) { // Kan nok endre rekkefølgen på not her når ting funker.
                         dominatedSet.add(ind);
                         break;
                     }
                 }
             }
-        notDomList.removeAll(dominatedSet);
-        return notDomList;
+        notChosenList.removeAll(dominatedSet);
+        return notChosenList;
         }
 
+        //ny, må sjekke om den funker ordentlig
+        private List<Individual> dominatingSet(List<Individual> pop) {
+            Set<Individual> dominatedSet = new HashSet<>();
+            List<Individual> notChosenList = new ArrayList<>(pop);
 
+            for (int i = 0; i < notChosenList.size(); i++) {
+                Individual ind = notChosenList.get(i);
+
+                if (dominatedSet.contains(ind)) {
+                    continue;
+                }
+                for (int j = i + 1; j < notChosenList.size(); j++) {
+                    Individual otherInd = notChosenList.get(j);
+
+                    if (dominatedSet.contains(otherInd)) {
+                        continue;
+                    }
+                    if (ind.dominateChecker(otherInd)) {
+                        dominatedSet.add(otherInd);
+                    }else if (otherInd.dominateChecker(ind)) {
+                        dominatedSet.add(ind);
+                        break;
+                    }
+                }
+            }
+            notChosenList.removeAll(dominatedSet);
+            return notChosenList;
+        }
     public List<Individual> parentSelection(List<Individual> pop) {
         List<Individual> chosen = new ArrayList<>();
         while (chosen.size() < Settings.parentSize) {
@@ -234,6 +266,35 @@ public class GeneticAlgorithm {
             }
         }
         return chosen;
+    }
+
+    //prøvde å lage ny, men usikker om den funker helt
+    public List<Individual> parentSelection2(List<Individual> pop) {
+        List<Individual> chosenParents = new ArrayList<>();
+        while (chosenParents.size() < Settings.parentSize) {
+
+            Individual parent1 = pop.get(Utils.randomInt(pop.size()));
+            Individual parent2 = pop.get(Utils.randomInt(pop.size()));
+
+            if (Utils.randomDouble() < Settings.tournamentProb) {
+                if (Settings.useNSGA) {
+                    if (parent1.getCrowdingDist() < parent2.getCrowdingDist()) {
+                        chosenParents.add(parent2);
+                    } else {
+                        chosenParents.add(parent1);
+                    }
+                } else {
+                    if (parent2.strictlyBetterFit(parent1)) {
+                        chosenParents.add(parent2);
+                    } else {
+                        chosenParents.add(parent1);
+                    }
+                }
+            } else {
+                chosenParents.add(Utils.selectRandom(parent1, parent2));
+            }
+        }
+        return chosenParents;
     }
 
     public Tuple<Individual, Individual> crossover (Individual p1, Individual p2) {
@@ -262,7 +323,5 @@ public class GeneticAlgorithm {
         g2 = mutateGeneRandomly(g2);
         return new Tuple<>(new Individual(g1, this.pixels), new Individual(g2, this.pixels));
     }
-
-
 
 }

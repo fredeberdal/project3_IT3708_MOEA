@@ -9,12 +9,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class main {
 
 
     public static ThreadPoolExecutor exe = (ThreadPoolExecutor)Executors.newFixedThreadPool(Settings.threadSize);
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         String file = Settings.file;
         String path = Settings.path;
         String pathGreen = Settings.pathGreen;
@@ -51,6 +52,7 @@ public class main {
             });
         }
         exe.shutdown();
+        exe.awaitTermination(1, TimeUnit.SECONDS);
         System.out.println("Done");
     }
 }

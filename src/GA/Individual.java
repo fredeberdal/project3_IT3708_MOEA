@@ -24,7 +24,7 @@ public class Individual {
         this.yLength = pixels.length;
         this.xLength = pixels[0].length;
         makeSegments();
-        fixSegments();
+        //fixSegments();
     }
 
     public Individual(Pixel[][] pixels, int numberOfSeg) {
@@ -34,7 +34,6 @@ public class Individual {
         this.xLength = pixels[0].length;
         this.genotype = new ArrayList<>();
 
-        //mulignes kjøre variant for overflødige segments
         primsMST();
         makeSegments();
     }
@@ -97,9 +96,13 @@ public class Individual {
 
         this.segments = temporarySegments;
         this.numberOfSeg = temporarySegments.size();
-        this.edgeValue = Fitness.allEdgeValue(this);
-        this.connectivity = Fitness.allConnectivity(this);
-        this.dev = Fitness.allDeviation(this);
+        setFitnessValues(this);
+
+    }
+    public void setFitnessValues(Individual ind){
+        this.edgeValue = Fitness.allEdgeValue(ind);
+        this.connectivity = Fitness.allConnectivity(ind);
+        this.dev = Fitness.allDeviation(ind);
     }
 
     public void primsMST() {
@@ -256,7 +259,7 @@ public class Individual {
         return temp;
     }
 
-    public boolean dominates(Individual ind) {
+    public boolean dominateChecker(Individual ind) {
         return this.connectivity < ind.connectivity && this.edgeValue < ind.edgeValue && this.dev < ind.dev;
     }
 
