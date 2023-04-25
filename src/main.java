@@ -34,7 +34,6 @@ public class main {
             geneticAlgorithm.runGA();
             bestIndividuals = geneticAlgorithm.getPop();
 
-            //Usikker om denne funker
             bestIndividuals.sort(Comparator.comparingDouble(p -> p.getFitnessWithWeights()));
             bestIndividuals = bestIndividuals.subList(0,popSize-1);
         }

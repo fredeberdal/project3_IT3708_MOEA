@@ -82,10 +82,6 @@ public class ImgSegmentationIO {
     }
 
     public void save (String pathname, Individual ind, String color) {
-        save(pathname, ind, color, false);
-    }
-
-    public void save (String pathname, Individual ind, String color, boolean checker) {
         if (color != "g" && color != "b") {throw new IllegalArgumentException("Color is not black or green.");}
         int segColor;
         int segSize = ind.getSegments().size();
@@ -105,11 +101,8 @@ public class ImgSegmentationIO {
             suffix = "green";
         }
         sumOfSeg = ind.getNumberOfSeg() + "_" + ind.getConnectivity() + "_" + ind.getDev() + "_" + ind.getEdgeValue();
-        if(checker){
-            path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/" + debugImageCount++ + ".jpg";
-        }else{
-            path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + segSize + ".jpg";
-        }
+
+        path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + sumOfSeg + ".jpg";
 
         System.out.println("Saving file for path:  " + path);
         try {

@@ -24,6 +24,7 @@ public class Individual {
         this.yLength = pixels.length;
         this.xLength = pixels[0].length;
         makeSegments();
+        fixSegments();
     }
 
     public Individual(Pixel[][] pixels, int numberOfSeg) {
@@ -36,6 +37,15 @@ public class Individual {
         //mulignes kjøre variant for overflødige segments
         primsMST();
         makeSegments();
+    }
+
+    public void fixSegments(){
+        int counter = 0;
+        while(this.segments.size()>allowedSegmentSize && counter < 10){
+            segmentMergeSmallRecursive(0);
+            counter++;
+            System.out.println("hmmm");
+        }
     }
 
     public void makeSegments() {
@@ -83,12 +93,13 @@ public class Individual {
                 temporarySegments.add(new Segment(seg));
             }
         }
+
+
         this.segments = temporarySegments;
         this.numberOfSeg = temporarySegments.size();
         this.edgeValue = Fitness.allEdgeValue(this);
         this.connectivity = Fitness.allConnectivity(this);
         this.dev = Fitness.allDeviation(this);
-        System.out.println("Amount of seg " + numberOfSeg);
     }
 
     public void primsMST() {
