@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import static Utils.SegmentCriteria.CONNECTIVITY;
 import static Utils.SegmentCriteria.DEVIATION;
-import static Utils.Settings.*;
 
 public class Individual {
     private final List<Gene> genotype;
@@ -40,7 +39,7 @@ public class Individual {
 
     public void fixSegments(){
         int counter = 0;
-        while(this.segments.size()>allowedSegmentSize && counter < 10){
+        while(this.segments.size()> 40 && counter < 10){
             segmentMergeSmallRecursive(0);
             counter++;
             System.out.println("hmmm");
@@ -62,7 +61,7 @@ public class Individual {
                 continue;
             }
             seg = new HashSet<>();
-            Tuple<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, this.xLength);
+            Pair<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, this.xLength);
 
             currentPixel = this.pixels[indexPixel.r][indexPixel.l];
             seg.add(currentPixel);

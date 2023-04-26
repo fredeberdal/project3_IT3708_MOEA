@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 public class main {
 
-
-    public static ThreadPoolExecutor exe = (ThreadPoolExecutor)Executors.newFixedThreadPool(Settings.threadSize);
     public static void main(String[] args) throws InterruptedException {
         String file = Settings.file;
         String path = Settings.path;
@@ -22,7 +20,7 @@ public class main {
 
         boolean runNSGA = Settings.runNSGA;
         boolean segmentMerge = Settings.segmentMerge;
-        int popSize = Settings.popSize;
+        int bestPops = Settings.bestPops;
 
         List<Individual> bestIndividuals = new ArrayList<>();
         ImgSegmentationIO imgSegmentationIO = new ImgSegmentationIO(file);
@@ -36,23 +34,16 @@ public class main {
             bestIndividuals = geneticAlgorithm.getPop();
 
             bestIndividuals.sort(Comparator.comparingDouble(p -> p.getFitnessWithWeights()));
-            bestIndividuals = bestIndividuals.subList(0,popSize-1);
+            bestIndividuals = bestIndividuals.subList(0,bestPops);
         }
-        Path bPath = Path.of(path);
-        Path gPath = Path.of(pathGreen);
-
         for(Individual ind : bestIndividuals){
-            exe.execute(()-> {
-                if(segmentMerge){
-                    ind.segmentMergeSmallRecursive(0);
-                }
-
-                imgSegmentationIO.save(file, ind, "b");
-                imgSegmentationIO.save(file, ind, "g");
-            });
+            if(segmentMerge){ind.segmentMergeSmallRecursive(0);}
+            imgSegmentationIO.save(file, ind, "b");
+            imgSegmentationIO.save(file, ind, "g");
         }
-        exe.shutdown();
-        exe.awaitTermination(1, TimeUnit.SECONDS);
         System.out.println("Done");
+        if(runNSGA){
+            System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontSize());
+        }
     }
-}
+    }

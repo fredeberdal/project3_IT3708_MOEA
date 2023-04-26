@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class Utils {
     private static Random random = new Random();
-    public static Tuple<Integer, Integer> toPixelCoordinates(int x, int xLength){
-        return new Tuple<>(x % xLength, Math.floorDiv(x, xLength));
+    public static Pair<Integer, Integer> toPixelCoordinates(int x, int xLength){
+        return new Pair<>(x % xLength, Math.floorDiv(x, xLength));
     }
 
     public static <T> T selectRandom(T i, T j) {
