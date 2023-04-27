@@ -8,15 +8,16 @@ public enum SegmentCriteria {
 
     EDGEVALUE, CONNECTIVITY, DEVIATION;
 
-    //gjøre om hele eller ikke bruke den
     public static Comparator<Individual> individualComparator (SegmentCriteria criteria) {
-        return switch (criteria) {
-            case EDGEVALUE -> (a, b) -> Double.compare(a.getEdgeValue(), b.getEdgeValue());
-            case CONNECTIVITY -> (a, b) -> Double.compare(a.getConnectivity(), b.getConnectivity());
-            case DEVIATION -> (a, b) -> Double.compare(a.getDev(), b.getDev());
-        };
+         Comparator<Individual> individualComparator;
+             if(criteria == EDGEVALUE){
+                 individualComparator = (x, y) -> Double.compare(x.getEdgeValue(), y.getEdgeValue());
+             }else if(criteria == DEVIATION){
+                 individualComparator = (x, y) -> Double.compare(x.getDev(), y.getDev());
+             }else{
+                 individualComparator = (x, y) -> Double.compare(x.getDev(), y.getDev());
+             }
+             return individualComparator;
     }
-
-    // Bruker ikke measure
 
 }

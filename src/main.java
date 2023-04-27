@@ -18,7 +18,7 @@ public class main {
         String path = Settings.path;
         String pathGreen = Settings.pathGreen;
 
-        boolean runNSGA = Settings.runNSGA;
+        boolean runNSGA = Settings.useNSGA;
         boolean segmentMerge = Settings.segmentMerge;
         int bestPops = Settings.bestPops;
 
@@ -33,8 +33,9 @@ public class main {
             geneticAlgorithm.runGA();
             bestIndividuals = geneticAlgorithm.getPop();
 
-            bestIndividuals.sort(Comparator.comparingDouble(p -> p.getFitnessWithWeights()));
+            bestIndividuals.sort(Comparator.comparingDouble(Individual::getFitnessWithWeights));
             bestIndividuals = bestIndividuals.subList(0,bestPops);
+            System.out.println("Antall i best ind : " + bestIndividuals.size());
         }
         for(Individual ind : bestIndividuals){
             if(segmentMerge){ind.segmentMergeSmallRecursive(0);}
@@ -44,6 +45,10 @@ public class main {
         System.out.println("Done");
         if(runNSGA){
             System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontSize());
+            List<List<Individual>> parentoOptimal = geneticAlgorithm.getPopRanked();
+            for(List<Individual> ind : parentoOptimal){
+                System.out.println("Amount of segments: " + ind.get(0).getNumberOfSeg());
+            }
         }
     }
-    }
+}

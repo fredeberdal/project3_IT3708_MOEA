@@ -17,7 +17,7 @@ public class Fitness {
     }
     //BLir denne brukt?
     public static double allConnectivity(Individual ind){
-        return ind.getSegments().stream().map(segment -> segment.connectivity).reduce(0.0, (sum, el) -> sum+el);
+        return ind.getSegments().stream().map(segment -> segment.connectivity).reduce(0.0, Double::sum);
     }
     //Sjekke om denne er riktig
     public static double segConnectivity(Segment seg){
@@ -49,13 +49,13 @@ public class Fitness {
         return -eV;
     }
     public static double allEdgeValue(Individual ind){
-        return ind.getSegments().stream().map(segment -> segment.edgeValue).reduce(0.0, (sum, el) -> sum+el);
+        return ind.getSegments().stream().map(segment -> segment.edgeValue).reduce(0.0, Double::sum);
     }
     public static double allDeviation(Individual ind){
-        return ind.getSegments().stream().map(segment -> segment.dev).reduce(0.0, (sum, el) -> sum+el);
+        return ind.getSegments().stream().map(segment -> segment.dev).reduce(0.0, Double::sum);
     }
 
     public static double deviation(Segment seg){
-        return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, (sum, el) -> sum+el);
+        return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, Double::sum);
     }
 }
