@@ -2,17 +2,18 @@ package Utils;
 
 public class Settings {
     public static final boolean useNSGA = true;
-    public static final int allowedSegmentSize = 30;
+
+    public static final int allowedSegmentSize = 80;
     public static final int triedMerges = 20;
-    public static final int amountOfGenerations = 5;
-    public static final int popSize = 50;
+    public static final int getAmountOfGenerations = 5;
+    public static final int getPopSize = 30;
 
     public static final int bestPops = 5;
-    public static final int amountOfSegments = 30;
-    public static final int parentSize = 16;
-    public static final double mutationProb = 0.1;
-    public static final double tournamentProb = 0.8;
-    public static final double crossoverProb = 0.6;
+    public static final int getAmountOfSegments = 30;
+    public static final int parentSize = 30;
+    public static final double getMutationProb = 0.2;
+    public static final double tournamentProb = 0.6;
+    public static final double crossoverProb = 0.5;
 
     public static final String file = "86016"; //86016, 118035, 147091, 176035, 176039, 353013
 

@@ -63,7 +63,7 @@ public class Individual {
             seg = new HashSet<>();
             Pair<Integer, Integer> indexPixel = Utils.toPixelCoordinates(j, this.xLength);
 
-            currentPixel = this.pixels[indexPixel.r][indexPixel.l];
+            currentPixel = this.pixels[indexPixel.getRight][indexPixel.getLeft];
             seg.add(currentPixel);
 
             nodesVisited[j] = true;
@@ -75,7 +75,7 @@ public class Individual {
                 nodesVisited[index] = true;
                 index = Utils.toIndexGenotype(currentPixel.width, currentPixel.height, xLength);
             }
-            if (this.pixels[indexPixel.r][indexPixel.l] != currentPixel) {
+            if (this.pixels[indexPixel.getRight][indexPixel.getLeft] != currentPixel) {
                 boolean notCurrent = false;
                 for (Segment s : temporarySegments) {
                     if (s.hasPixel(currentPixel)) {

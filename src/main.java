@@ -3,13 +3,9 @@ import GA.Individual;
 import ImageSegment.ImgSegmentationIO;
 import Utils.Settings;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class main {
 
@@ -44,7 +40,7 @@ public class main {
         }
         System.out.println("Done");
         if(runNSGA){
-            System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontSize());
+            System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontierSize());
             List<List<Individual>> parentoOptimal = geneticAlgorithm.getPopRanked();
             for(List<Individual> ind : parentoOptimal){
                 System.out.println("Amount of segments: " + ind.get(0).getNumberOfSeg());
