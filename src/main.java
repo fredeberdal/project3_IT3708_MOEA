@@ -25,13 +25,13 @@ public class main {
         if(runNSGA){
             geneticAlgorithm.runNSGA();
             bestIndividuals = geneticAlgorithm.rankPop(geneticAlgorithm.getPop()).get(0);
+            bestIndividuals = removeDups(bestIndividuals);
         }else{
             geneticAlgorithm.runGA();
             bestIndividuals = geneticAlgorithm.getPop();
 
             bestIndividuals.sort(Comparator.comparingDouble(Individual::getFitnessWithWeights));
             bestIndividuals = bestIndividuals.subList(0,bestPops);
-            System.out.println("Antall i best ind : " + bestIndividuals.size());
         }
         for(Individual ind : bestIndividuals){
             if(segmentMerge){ind.segmentMergeSmallRecursive(0);}
@@ -43,8 +43,19 @@ public class main {
             System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontierSize());
             List<List<Individual>> parentoOptimal = geneticAlgorithm.getPopRanked();
             for(List<Individual> ind : parentoOptimal){
-                System.out.println("Amount of segments: LITEN ENDRING " + ind.get(0).getNumberOfSeg());
+                System.out.println("Amount of segments: " + ind.get(0).getNumberOfSeg());
             }
         }
+    }
+    public static List<Individual> removeDups(List<Individual> pop){
+        List<Individual> newPop = new ArrayList<>();
+        for(Individual i : pop){
+            if(!newPop.contains(i)){
+                newPop.add(i);
+            }
+        }
+        System.out.println(pop.size());
+        System.out.println(newPop.size());
+        return newPop;
     }
 }

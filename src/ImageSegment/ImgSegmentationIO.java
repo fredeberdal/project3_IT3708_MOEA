@@ -18,7 +18,6 @@ public class ImgSegmentationIO {
 
     private int width;
     private int height;
-    private static int debugImageCount = 0;
     private Pixel[][] pixels;
 
     public int getWidth() { return this.width; }
@@ -85,26 +84,21 @@ public class ImgSegmentationIO {
 
     public void save (String pathname, Individual ind, String color) {
         int segColor;
-        int segSize = ind.getSegments().size();
         String sumOfSeg;
         String suffix;
         String path;
-        String folder;
 
         switch (color) {
             case "b" -> {
                 segColor = RGB.black.findRGBInt();
-                folder = "";
                 suffix = "black";
             }
             case "g" -> {
                 segColor = RGB.green.findRGBInt();
-                folder = "_Green";
                 suffix = "green";
             }
             default -> throw new IllegalArgumentException("Color is not black or green.");
         }
-
         sumOfSeg = ind.getNumberOfSeg() + "_" + ind.getConnectivity() + "_" + ind.getDev() + "_" + ind.getEdgeValue();
 
         path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + sumOfSeg + ".jpg";
