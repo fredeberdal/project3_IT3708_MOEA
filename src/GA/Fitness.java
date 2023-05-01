@@ -15,11 +15,12 @@ public class Fitness {
                         + Math.pow(Math.abs(j.b-i.b), 2)
         );
     }
-    //BLir denne brukt?
-    public static double allConnectivity(Individual ind){
-        return ind.getSegments().stream().map(segment -> segment.connectivity).reduce(0.0, (sum, el) -> sum+el);
+
+    public static double deviation(Segment seg){
+        return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, (sum, el) -> sum+el);
     }
-    //Sjekke om denne er riktig
+
+    // TODO Sjekke om denne er riktig
     public static double segConnectivity(Segment seg){
         double con = 0;
         for(Pixel p : seg.getPixels()){
@@ -38,24 +39,26 @@ public class Fitness {
         double eV = 0;
         for (Pixel p : seg.getPixels()){
             Collection<Pixel> n = p.getNeighbours().values();
-            for(Pixel neigh : n){
-                if(seg.hasPixel(neigh)){
-                    eV += 0;
-                } else {
-                    eV += distance(p.color, neigh.color);
+            for(Pixel neighboru : n){
+                if (!seg.hasPixel(neighboru)) {
+                    double dist = distance(p.color, neighboru.color);
+                    eV += dist;
                 }
             }
         }
         return -eV;
     }
+
     public static double allEdgeValue(Individual ind){
         return ind.getSegments().stream().map(segment -> segment.edgeValue).reduce(0.0, (sum, el) -> sum+el);
     }
+
     public static double allDeviation(Individual ind){
         return ind.getSegments().stream().map(segment -> segment.dev).reduce(0.0, (sum, el) -> sum+el);
     }
 
-    public static double deviation(Segment seg){
-        return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, (sum, el) -> sum+el);
+    public static double allConnectivity(Individual ind){
+        return ind.getSegments().stream().map(segment -> segment.connectivity).reduce(0.0, (sum, el) -> sum+el);
     }
+
 }

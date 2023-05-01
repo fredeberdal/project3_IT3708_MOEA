@@ -32,6 +32,7 @@ public class ImgSegmentationIO {
             this.width = img.getWidth();
             this.pixels = new Pixel[img.getHeight()][img.getWidth()];
 
+            // Populate the pixels array with the corresponding RGB values from the image
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
                     Color color = new Color(img.getRGB(j, i));
@@ -39,7 +40,8 @@ public class ImgSegmentationIO {
                     pixels[i][j] = pixel;
                 }
             }
-            // Pixels er omvendt representert enn en typisk 2D-array. (j = width, i = height)
+
+            // Set the neighbors for each pixel in the pixels array. Pixels are reversely represented.
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
                     pixels[i][j].setNeighbours(getNeighbours(j, i));
@@ -50,7 +52,7 @@ public class ImgSegmentationIO {
         }
     }
 
-    private Map<Integer, Pixel> getNeighbours(int width, int height) { // Lånt logikk
+    private Map<Integer, Pixel> getNeighbours(int width, int height) {
         Map<Integer, Pixel> neighbours = new HashMap<>();
 
         if (width+1 < this.width) {
@@ -82,24 +84,27 @@ public class ImgSegmentationIO {
     }
 
     public void save (String pathname, Individual ind, String color) {
-        if (color != "g" && color != "b") {throw new IllegalArgumentException("Color is not black or green.");}
         int segColor;
         int segSize = ind.getSegments().size();
-        String folder;
         String sumOfSeg;
         String suffix;
         String path;
-        String txtSuffix;
+        String folder;
 
-        if(color == "b"){
-            segColor = RGB.black.findRGBInt();
-            folder = "";
-            suffix = "black";
-        }else{
-            segColor = RGB.green.findRGBInt();
-            folder = "_Green";
-            suffix = "green";
+        switch (color) {
+            case "b" -> {
+                segColor = RGB.black.findRGBInt();
+                folder = "";
+                suffix = "black";
+            }
+            case "g" -> {
+                segColor = RGB.green.findRGBInt();
+                folder = "_Green";
+                suffix = "green";
+            }
+            default -> throw new IllegalArgumentException("Color is not black or green.");
         }
+
         sumOfSeg = ind.getNumberOfSeg() + "_" + ind.getConnectivity() + "_" + ind.getDev() + "_" + ind.getEdgeValue();
 
         path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + sumOfSeg + ".jpg";
@@ -133,8 +138,8 @@ public class ImgSegmentationIO {
     }
 
     private int fetchBackground(Pixel pixel, String color) {
-        if(color.equals("b")){return RGB.white.findRGBInt();
-
+        if(color.equals("b")){
+            return RGB.white.findRGBInt();
         }else {return pixel.color.findRGBInt();}
     }
 

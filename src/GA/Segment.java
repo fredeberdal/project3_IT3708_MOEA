@@ -26,18 +26,16 @@ public class Segment {
     public RGB getCentroid() {
         return this.centroid;
     }
+
     public RGB locateCentroid(){
-        int size = this.pixels.size();
-        int r = 0, g = 0, b = 0;
-        for(Pixel p: this.pixels){
+        int size = pixels.size();
+        int r= 0, g = 0, b = 0;
+        for(Pixel p: pixels){
             r += p.color.r; g += p.color.g; b+= p.color.b;
         }
-        int size_r = r/size;
-        int size_g = g/size;
-        int size_b = b/size;
-        RGB locatedCentroid = new RGB(size_r, size_g, size_b);
-        return locatedCentroid;
+        return new RGB(r/size, g/size, b/size);
     }
+
 
     public void setCentroid(RGB centroid) {
         this.centroid = centroid;
