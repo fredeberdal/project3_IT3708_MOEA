@@ -3,10 +3,10 @@ package Utils;
 public class Settings {
     public static final boolean useNSGA = true;
 
-    public static final int highestSegmentSize = 30;
+    public static final int highestSegmentSize = 20;
     public static final int lowestSegmentSize = 4;
     public static final int triedMerges = 20;
-    public static final int getAmountOfGenerations = 10;
+    public static final int getAmountOfGenerations = 5;
     public static final int getPopSize = 60;
 
     public static final int bestPops = 5;
@@ -16,7 +16,6 @@ public class Settings {
     public static final double crossoverProb = 0.5;
 
     public static final String file = "76002"; //86016, 118035, 147091, 176035, 176039, 353013
-
     public static final boolean segmentMerge = true;
 
     // Parameters for weighted fitness

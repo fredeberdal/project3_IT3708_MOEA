@@ -35,7 +35,7 @@ public class main {
             if(segmentMerge){ind.segmentMergeSmallRecursive(0);}
             if(ind.getNumberOfSeg() < Settings.highestSegmentSize + 2){
                 imgSegmentationIO.save(file, ind, "b");
-                imgSegmentationIO.save(file, ind, "g");
+                //imgSegmentationIO.save(file, ind, "g");
             }
         }
         System.out.println("Done");
