@@ -43,7 +43,7 @@ public class main {
             System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontierSize());
             List<List<Individual>> parentoOptimal = geneticAlgorithm.getPopRanked();
             for(List<Individual> ind : parentoOptimal){
-                System.out.println("Amount of segments: " + ind.get(0).getNumberOfSeg());
+                System.out.println("Amount of segments: LITEN ENDRING " + ind.get(0).getNumberOfSeg());
             }
         }
     }
