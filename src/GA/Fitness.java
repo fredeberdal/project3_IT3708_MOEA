@@ -20,7 +20,6 @@ public class Fitness {
         return seg.getPixels().stream().map(pixel -> distance(pixel.color, seg.getCentroid())).reduce(0.0, (sum, el) -> sum+el);
     }
 
-    // TODO Sjekke om denne er riktig
     public static double segConnectivity(Segment seg){
         double con = 0;
         for(Pixel p : seg.getPixels()){

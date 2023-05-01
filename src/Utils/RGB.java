@@ -15,7 +15,6 @@ public class RGB {
         this.b = b;
     }
 
-    // Skal brukes når vi skal lese av bildene
     public static RGB black = new RGB (0, 0, 0);
     public static RGB green = new RGB (0, 255, 0);
     public static RGB white = new RGB (255, 255, 255);

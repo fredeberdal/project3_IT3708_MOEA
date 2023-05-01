@@ -52,7 +52,7 @@ public class GeneticAlgorithm {
                 newPop.add(offspring.getRight);
             }
             for (Individual ind : newPop) {
-                if (Utils.randomDouble() < Settings.getMutationProb) {
+                if (rand.nextDouble() < Settings.getMutationProb) {
                     ind.segmentMergeMutation();
                 }
             }
@@ -124,12 +124,12 @@ public class GeneticAlgorithm {
     }
 
     public void makePop(){
-        System.out.println("Making a pop"); // For oversikt
+        System.out.println("Making a pop");
         List<Individual> newPop = new ArrayList<>();
         ThreadLocalRandom rand = ThreadLocalRandom.current();
 
         for (int i = 0; i < Settings.getPopSize / 2; i++) {
-            Individual ind = new Individual(this.pixels, rand.nextInt(Settings.lowestSegmentSize, Settings.highestSegmentSize) + 1); // Inkluderer upper bound TODO burde kanskje se på mengde segmenter...
+            Individual ind = new Individual(this.pixels, rand.nextInt(Settings.lowestSegmentSize, Settings.highestSegmentSize) + 1); // Inkluderer upper bound
             newPop.add(ind);
         }
         System.out.println("Finished making pop");
@@ -253,7 +253,7 @@ public class GeneticAlgorithm {
         if (rand.nextDouble() < Settings.crossoverProb) {
             int length = g1.size();
 
-            //int indexPoint = Utils.randomInt(length);
+
             int indexPoint = ThreadLocalRandom.current().nextInt(1,length);
             List<Gene> p1Segment1 = new ArrayList<>(g1.subList(0, indexPoint));
             List<Gene> p1Segment2 = new ArrayList<>(g1.subList(indexPoint, length));
