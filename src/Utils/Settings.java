@@ -20,7 +20,6 @@ public class Settings {
     public static final String path = "training_images/" + file + "/Test image.jpg";
     public static final String pathGreen = "training_images/" + file + "/Test image.jpg";
 
-    public static final boolean runNSGA = true;
     public static final boolean segmentMerge = true;
 
     // Parameters for weighted fitness

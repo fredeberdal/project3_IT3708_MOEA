@@ -14,6 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GeneticAlgorithm {
 
     private static Random rand = new Random();
+
+    public List<List<Individual>> getPopRanked() {
+        return popRanked;
+    }
+
     private List<List<Individual>> popRanked;
     private List<Individual> pop;
     private Pixel[][] pixels;
@@ -120,6 +125,27 @@ public class GeneticAlgorithm {
             differenceInCriteria /= minMaxCriteriaDiffInSeg;
 
             paretoFrontier.get(i).setCrowdingDist(paretoFrontier.get(i).getCrowdingDist() + differenceInCriteria);
+        }
+    }
+
+    private void assignCrowdingDistToInd(List<Individual> paretoFront, SegmentCriteria criteria) { // Endre param navn
+        int maxInt = 10000000;
+        paretoFront.sort(SegmentCriteria.individualComparator(criteria));
+        Individual maxInd = paretoFront.get(paretoFront.size()-1);
+        Individual minInd = paretoFront.get(0);
+        maxInd.setCrowdingDist(maxInt);
+        minInd.setCrowdingDist(maxInt);
+
+        double minMaxCriteriaDiffInSeg = maxInd.getSegCriteriaValue(criteria);
+        minMaxCriteriaDiffInSeg -= minInd.getSegCriteriaValue(criteria);
+
+        double differenceInCriteria;
+        for (int i = 1; i < paretoFront.size()-1; i++) {
+            differenceInCriteria = paretoFront.get(i+1).getSegCriteriaValue(criteria);
+            differenceInCriteria -= paretoFront.get(i-1).getSegCriteriaValue(criteria);
+            differenceInCriteria /= minMaxCriteriaDiffInSeg;
+
+            paretoFront.get(i).setCrowdingDist(paretoFront.get(i).getCrowdingDist() + differenceInCriteria);
         }
     }
 
