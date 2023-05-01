@@ -85,23 +85,23 @@ public class ImgSegmentationIO {
     public void save (String pathname, Individual ind, String color) {
         int segColor;
         String sumOfSeg;
-        String suffix;
+        String fileColor;
         String path;
 
         switch (color) {
             case "b" -> {
                 segColor = RGB.black.findRGBInt();
-                suffix = "black";
+                fileColor = "black";
             }
             case "g" -> {
                 segColor = RGB.green.findRGBInt();
-                suffix = "green";
+                fileColor = "green";
             }
             default -> throw new IllegalArgumentException("Color is not black or green.");
         }
         sumOfSeg = ind.getNumberOfSeg() + "_" + ind.getConnectivity() + "_" + ind.getDev() + "_" + ind.getEdgeValue();
 
-        path = "evaluator/student_segments/"+ pathname + "/" + suffix + "/segments=" + sumOfSeg + ".jpg";
+        path = "evaluator/student_segments/"+ pathname + "/" + fileColor + "/segments=" + sumOfSeg + ".jpg";
 
         System.out.println("Saving file for path:  " + path);
         try {

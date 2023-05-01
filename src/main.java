@@ -11,8 +11,6 @@ public class main {
 
     public static void main(String[] args) throws InterruptedException {
         String file = Settings.file;
-        String path = Settings.path;
-        String pathGreen = Settings.pathGreen;
 
         boolean runNSGA = Settings.useNSGA;
         boolean segmentMerge = Settings.segmentMerge;
@@ -35,17 +33,13 @@ public class main {
         }
         for(Individual ind : bestIndividuals){
             if(segmentMerge){ind.segmentMergeSmallRecursive(0);}
-            imgSegmentationIO.save(file, ind, "b");
-            imgSegmentationIO.save(file, ind, "g");
-        }
-        System.out.println("Done");
-        if(runNSGA){
-            System.out.println("Parento fronts: " + geneticAlgorithm.getParetoFrontierSize());
-            List<List<Individual>> parentoOptimal = geneticAlgorithm.getPopRanked();
-            for(List<Individual> ind : parentoOptimal){
-                System.out.println("Amount of segments: " + ind.get(0).getNumberOfSeg());
+            if(ind.getNumberOfSeg() < Settings.highestSegmentSize + 2){
+                imgSegmentationIO.save(file, ind, "b");
+                imgSegmentationIO.save(file, ind, "g");
             }
         }
+        System.out.println("Done");
+
     }
     public static List<Individual> removeDups(List<Individual> pop){
         List<Individual> newPop = new ArrayList<>();

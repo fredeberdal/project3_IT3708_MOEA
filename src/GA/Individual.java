@@ -145,7 +145,7 @@ public class Individual {
     }
 
     public void segmentMergeMutation() {
-        List<Segment> allowedSegments = segments.stream().filter(seg -> seg.getPixels().size() < Settings.allowedSegmentSize).toList();
+        List<Segment> allowedSegments = segments.stream().filter(seg -> seg.getPixels().size() < Settings.highestSegmentSize).toList();
         if (allowedSegments.size() != 0) {
             int random = ThreadLocalRandom.current().nextInt(allowedSegments.size());
             Segment randomSegment = allowedSegments.get(random);
@@ -201,7 +201,7 @@ public class Individual {
     public void segmentMergeSmallRecursive(int counter) {
         List<Segment> allowedSegments = new ArrayList<>();
         for (Segment seg : this.segments) {
-            if (Settings.allowedSegmentSize > seg.getPixels().size()) {
+            if (Settings.highestSegmentSize > seg.getPixels().size()) {
                 allowedSegments.add(seg);
             }
         }

@@ -44,7 +44,6 @@ public class GeneticAlgorithm {
             System.out.println("Current Generation: " + genCount * 10);
             List<Individual> newPop = new ArrayList<>(popSize);
             List<Individual> parents = parentSelection(this.pop);
-
             for (int i = 0; i < popSize / 2; i++)  {
                 final Individual p1 = parents.get(rand.nextInt(parents.size()));
                 final Individual p2 = parents.get(rand.nextInt(parents.size()));
@@ -72,7 +71,7 @@ public class GeneticAlgorithm {
         rankPop(this.pop);
 
         while (genCount < Settings.getAmountOfGenerations) {
-            System.out.println("Current Generation: " + genCount * 10); // For oversikt
+            System.out.println("Current Generation: " + genCount * 10);
             List<Individual> newPop = new ArrayList<>(popSize);
             List<Individual> parents = parentSelection(this.pop);
 
@@ -130,7 +129,7 @@ public class GeneticAlgorithm {
         ThreadLocalRandom rand = ThreadLocalRandom.current();
 
         for (int i = 0; i < Settings.getPopSize / 2; i++) {
-            Individual ind = new Individual(this.pixels, rand.nextInt(4, Settings.getAmountOfSegments) + 1); // Inkluderer upper bound TODO burde kanskje se på mengde segmenter...
+            Individual ind = new Individual(this.pixels, rand.nextInt(Settings.lowestSegmentSize, Settings.highestSegmentSize) + 1); // Inkluderer upper bound TODO burde kanskje se på mengde segmenter...
             newPop.add(ind);
         }
         System.out.println("Finished making pop");
