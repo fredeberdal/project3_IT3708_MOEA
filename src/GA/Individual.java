@@ -139,8 +139,7 @@ public class Individual {
 
     public List<Edge> makeEdges(Pixel p) {
         List<Edge> edges = new ArrayList<>();
-        //usikker på objects::nonull
-        edges = Gene.geneDirections().stream().map(p::directionalNeighbour).filter(n -> n != null).map(n -> new Edge(p, n)).collect(Collectors.toList());
+        edges = Gene.geneDirections().stream().map(p::directionalNeighbour).filter(n -> n != null).map(n -> new Edge(p, n)).toList();
         return edges;
     }
 

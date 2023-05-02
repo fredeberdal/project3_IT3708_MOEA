@@ -3,12 +3,10 @@ package Utils;
 public class Settings {
     public static final int getAmountOfGenerations = 5;
     public static final boolean useNSGA = true;
-
-    public static final int highestSegmentSize = 20;
+    public static final int highestSegmentSize = 30;
     public static final int lowestSegmentSize = 4;
     public static final int triedMerges = 20;
     public static final int getPopSize = 60;
-
     public static final int bestPops = 5;
     public static final int parentSize = 15;
     public static final double getMutationProb = 0.2;
