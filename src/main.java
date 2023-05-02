@@ -33,7 +33,7 @@ public class main {
         }
         for(Individual ind : bestIndividuals){
             if(segmentMerge){ind.segmentMergeSmallRecursive(0);}
-            if(ind.getNumberOfSeg() < Settings.highestSegmentSize + 2){
+            if(ind.getNumberOfSeg() > 1 && ind.getNumberOfSeg() < Settings.highestSegmentSize + 2){
                 imgSegmentationIO.save(file, ind, "b");
                 //imgSegmentationIO.save(file, ind, "g");
             }
@@ -48,8 +48,6 @@ public class main {
                 newPop.add(i);
             }
         }
-        System.out.println(pop.size());
-        System.out.println(newPop.size());
         return newPop;
     }
 }

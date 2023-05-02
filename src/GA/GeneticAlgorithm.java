@@ -33,7 +33,7 @@ public class GeneticAlgorithm {
         return this.popRanked.size();
     }
 
-    public void runGA() throws InterruptedException {
+    public void runGA() throws InterruptedException { // Run simple GA
         final int amountOfGenerations = Settings.getAmountOfGenerations;
         final int popSize = Settings.getPopSize;
         final ThreadLocalRandom rand = ThreadLocalRandom.current();
@@ -41,7 +41,7 @@ public class GeneticAlgorithm {
         makePop();
 
         while (genCount < amountOfGenerations) {
-            System.out.println("Current Generation: " + genCount * 10);
+            System.out.println("Current Generation: " + genCounter(genCount));
             List<Individual> newPop = new ArrayList<>(popSize);
             List<Individual> parents = parentSelection(this.pop);
             for (int i = 0; i < popSize / 2; i++)  {
@@ -63,7 +63,7 @@ public class GeneticAlgorithm {
     }
 
 
-    public void runNSGA() throws InterruptedException {
+    public void runNSGA() throws InterruptedException { // Run MOEA
         final ThreadLocalRandom rand = ThreadLocalRandom.current();
         int genCount = 0;
         makePop();
@@ -71,7 +71,7 @@ public class GeneticAlgorithm {
         rankPop(this.pop);
 
         while (genCount < Settings.getAmountOfGenerations) {
-            System.out.println("Current Generation: " + genCount * 10);
+            System.out.println("Current Generation: " + genCounter(genCount));
             List<Individual> newPop = new ArrayList<>(popSize);
             List<Individual> parents = parentSelection(this.pop);
 
@@ -276,6 +276,9 @@ public class GeneticAlgorithm {
     //TODO slett
     public static void genFix() throws InterruptedException {
         Thread.sleep(1000); //TODO legg på 0
+    }
+    public static int genCounter(int i) {
+        return i*10;
     }
 
 }

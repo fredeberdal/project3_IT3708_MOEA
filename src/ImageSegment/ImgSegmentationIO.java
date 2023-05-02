@@ -136,5 +136,4 @@ public class ImgSegmentationIO {
             return RGB.white.findRGBInt();
         }else {return pixel.color.findRGBInt();}
     }
-
 }
